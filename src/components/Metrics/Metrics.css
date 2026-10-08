@@ -1,0 +1,80 @@
+.telemetry-strip {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 18px;
+  padding: 7px 14px;
+  background: rgba(14, 20, 34, 0.5);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  font-family: var(--font-mono);
+  overflow-x: auto;
+  user-select: none;
+  width: 100%;
+}
+
+.telemetry-node {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  white-space: nowrap;
+}
+
+.telemetry-kicker {
+  font-size: 0.65rem;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  color: var(--text-muted);
+}
+
+.telemetry-val {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.telemetry-sub-divider {
+  color: var(--text-faint);
+  margin: 0 4px;
+}
+
+.telemetry-divider {
+  width: 1px;
+  height: 14px;
+  background: var(--border-medium);
+}
+
+.text-accent {
+  color: var(--accent-primary);
+}
+
+.text-coral {
+  color: var(--accent-coral);
+}
+
+/* Status variants */
+.status-idle {
+  color: var(--text-muted);
+}
+
+.status-active {
+  color: var(--accent-amber);
+}
+
+.status-found {
+  color: var(--accent-emerald);
+}
+
+.status-not-found {
+  color: var(--accent-rose);
+}
+
+@media (max-width: 600px) {
+  .telemetry-strip {
+    gap: 12px;
+    padding: 8px 12px;
+  }
+  .telemetry-val {
+    font-size: 0.82rem;
+  }
+}
