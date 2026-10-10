@@ -1,0 +1,278 @@
+.instrument-navbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 24px;
+  background: rgba(7, 9, 14, 0.92);
+  border-bottom: 1px solid var(--border-medium, #1f2738);
+  backdrop-filter: blur(12px);
+  position: sticky;
+  top: 0;
+  z-index: 45;
+  user-select: none;
+  gap: 16px;
+}
+
+.navbar-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.nav-home-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: transparent;
+  border: 1px solid var(--border-medium, #1f2738);
+  color: var(--text-secondary, #94a3b8);
+  padding: 6px 12px;
+  border-radius: var(--radius-sm, 6px);
+  font-family: var(--font-mono, monospace);
+  font-size: 0.75rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all var(--transition-fast, 140ms ease);
+}
+
+.nav-home-btn:hover {
+  border-color: var(--border-strong, #27344c);
+  color: var(--text-primary, #f8fafc);
+  background: var(--bg-surface-elevated, #121824);
+}
+
+.home-glyph {
+  font-size: 0.85rem;
+  transition: transform var(--transition-fast);
+}
+
+.nav-home-btn:hover .home-glyph {
+  transform: translateX(-2px);
+}
+
+.nav-divider {
+  width: 1px;
+  height: 20px;
+  background: var(--border-medium, #1f2738);
+}
+
+.nav-brand-lockup {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.brand-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--accent-cyan, #5ce1e6);
+  box-shadow: 0 0 8px var(--accent-cyan, #5ce1e6);
+}
+
+.brand-label {
+  font-family: var(--font-display, 'Space Grotesk', sans-serif);
+  font-weight: 800;
+  font-size: 0.95rem;
+  letter-spacing: 0.12em;
+  color: var(--text-primary, #f8fafc);
+}
+
+.brand-sub {
+  font-family: var(--font-mono, monospace);
+  font-size: 0.65rem;
+  font-weight: 800;
+  color: var(--accent-cyan, #5ce1e6);
+  background: rgba(92, 225, 230, 0.1);
+  padding: 1px 5px;
+  border-radius: 3px;
+  letter-spacing: 0.08em;
+}
+
+/* Curriculum Command Selector Trigger */
+.curriculum-command-trigger {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--bg-surface, #0c1018);
+  border: 1px solid var(--border-medium, #1f2738);
+  padding: 6px 14px;
+  border-radius: var(--radius-sm, 6px);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  margin-left: 6px;
+}
+
+.curriculum-command-trigger:hover,
+.curriculum-command-trigger.is-open {
+  border-color: var(--accent-cyan, #5ce1e6);
+  background: var(--bg-surface-elevated, #121824);
+  box-shadow: 0 0 14px rgba(92, 225, 230, 0.15);
+}
+
+.trigger-chapter-badge {
+  font-family: var(--font-mono, monospace);
+  font-size: 0.68rem;
+  font-weight: 700;
+  color: var(--accent-cyan, #5ce1e6);
+  letter-spacing: 0.06em;
+}
+
+.trigger-algo-name {
+  font-family: var(--font-display, 'Space Grotesk', sans-serif);
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: var(--text-primary, #f8fafc);
+}
+
+.trigger-arrow {
+  color: var(--text-muted, #64748b);
+  font-size: 0.75rem;
+  transition: transform var(--transition-fast);
+}
+
+.curriculum-command-trigger.is-open .trigger-arrow {
+  transform: rotate(180deg);
+}
+
+.trigger-kbd {
+  font-family: var(--font-mono, monospace);
+  font-size: 0.62rem;
+  padding: 1px 5px;
+  border-radius: 3px;
+  background: var(--bg-surface-elevated, #121824);
+  border: 1px solid var(--border-strong, #27344c);
+  color: var(--text-muted, #64748b);
+}
+
+/* Center Mode Segmented Control */
+.navbar-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.nav-mode-segmented-control {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  background: var(--bg-surface, #0c1018);
+  border: 1px solid var(--border-medium, #1f2738);
+  padding: 3px;
+  border-radius: var(--radius-sm, 6px);
+}
+
+.nav-mode-tab {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 12px;
+  border-radius: var(--radius-xs, 4px);
+  background: transparent;
+  border: none;
+  color: var(--text-secondary, #94a3b8);
+  font-family: var(--font-mono, monospace);
+  font-size: 0.74rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.nav-mode-tab:hover {
+  color: var(--text-primary, #f8fafc);
+}
+
+.nav-mode-tab.is-active {
+  background: var(--bg-surface-elevated, #121824);
+  color: var(--text-primary, #f8fafc);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+}
+
+.mode-tab-icon {
+  font-size: 0.85rem;
+}
+
+.mode-streak-badge {
+  font-size: 0.65rem;
+  padding: 1px 5px;
+  border-radius: 3px;
+  background: rgba(245, 181, 68, 0.2);
+  color: var(--accent-amber, #f5b544);
+  border: 1px solid rgba(245, 181, 68, 0.4);
+  font-weight: 800;
+}
+
+/* Right Progress & Shortcuts */
+.navbar-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.nav-progress-capsule {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 12px;
+  border-radius: var(--radius-sm, 6px);
+  background: var(--bg-surface, #0c1018);
+  border: 1px solid var(--border-medium, #1f2738);
+  font-family: var(--font-mono, monospace);
+  font-size: 0.72rem;
+}
+
+.capsule-label {
+  color: var(--text-muted, #64748b);
+  letter-spacing: 0.08em;
+  font-weight: 700;
+}
+
+.capsule-count {
+  color: var(--text-secondary, #94a3b8);
+}
+
+.capsule-count strong {
+  color: var(--accent-emerald, #3dd99e);
+}
+
+.nav-shortcuts-btn {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.shortcuts-kbd {
+  font-family: var(--font-mono, monospace);
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 3px 8px;
+  border-radius: 4px;
+  background: var(--bg-surface, #0c1018);
+  border: 1px solid var(--border-medium, #1f2738);
+  color: var(--text-secondary, #94a3b8);
+  transition: all var(--transition-fast);
+}
+
+.nav-shortcuts-btn:hover .shortcuts-kbd {
+  border-color: var(--accent-cyan, #5ce1e6);
+  color: var(--accent-cyan, #5ce1e6);
+}
+
+@media (max-width: 900px) {
+  .instrument-navbar {
+    flex-wrap: wrap;
+    padding: 10px 16px;
+    gap: 10px;
+  }
+  .navbar-center {
+    order: 3;
+    width: 100%;
+    justify-content: center;
+  }
+  .nav-home-btn .home-text {
+    display: none;
+  }
+}

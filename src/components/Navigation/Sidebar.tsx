@@ -8,6 +8,10 @@ interface SidebarProps {
   onSelectAlgorithm: (id: string) => void;
   isOpenMobile?: boolean;
   onCloseMobile?: () => void;
+  isOpenDrawer?: boolean;
+  onCloseDrawer?: () => void;
+  isPinned?: boolean;
+  onTogglePin?: () => void;
   completedAlgoIds?: string[];
   recentlyExploredIds?: string[];
   challengeStats?: {
@@ -24,6 +28,10 @@ export const Sidebar: React.FC<SidebarProps> = ({
   onSelectAlgorithm,
   isOpenMobile = false,
   onCloseMobile,
+  isOpenDrawer = false,
+  onCloseDrawer,
+  isPinned = false,
+  onTogglePin,
   completedAlgoIds = [],
   recentlyExploredIds = [],
   challengeStats,
@@ -75,15 +83,27 @@ export const Sidebar: React.FC<SidebarProps> = ({
     }
   };
 
+  const isVisible = isOpenDrawer || isOpenMobile || isPinned;
+
   return (
     <>
-      {/* Mobile Backdrop */}
-      {isOpenMobile && (
-        <div className="sidebar-backdrop" onClick={onCloseMobile} aria-hidden="true" />
+      {/* Backdrop when drawer is open and unpinned */}
+      {isVisible && !isPinned && (
+        <div
+          className="sidebar-backdrop"
+          onClick={() => {
+            onCloseDrawer?.();
+            onCloseMobile?.();
+          }}
+          aria-hidden="true"
+        />
       )}
 
-      <aside className={`sidebar-curriculum ${isOpenMobile ? 'mobile-open' : ''}`} aria-label="Curriculum Navigation">
-        {/* Brand Display Header */}
+      <aside
+        className={`sidebar-curriculum ${isVisible ? 'drawer-open' : ''} ${isPinned ? 'is-pinned' : ''}`}
+        aria-label="Curriculum Navigation"
+      >
+        {/* Brand & Drawer Control Header */}
         <div className="sidebar-brand-box">
           <div className="brand-logo-lockup">
             <div className="brand-mark">
@@ -95,9 +115,31 @@ export const Sidebar: React.FC<SidebarProps> = ({
               <span className="brand-text-secondary">LENS 2.0</span>
             </div>
           </div>
-          <div className="brand-badge-status">
-            <span className="pulse-indicator" />
-            <span>LAB 2.0</span>
+
+          <div className="sidebar-header-actions">
+            {onTogglePin && (
+              <button
+                type="button"
+                className={`sidebar-action-btn ${isPinned ? 'is-active' : ''}`}
+                onClick={onTogglePin}
+                title={isPinned ? 'Unpin Sidebar (Floating Drawer)' : 'Pin Sidebar to Workspace'}
+                aria-label={isPinned ? 'Unpin Sidebar' : 'Pin Sidebar'}
+              >
+                📌
+              </button>
+            )}
+            <button
+              type="button"
+              className="sidebar-action-btn close"
+              onClick={() => {
+                onCloseDrawer?.();
+                onCloseMobile?.();
+              }}
+              title="Close Curriculum Explorer (Esc)"
+              aria-label="Close Curriculum Explorer"
+            >
+              ✕
+            </button>
           </div>
         </div>
 
@@ -238,7 +280,10 @@ export const Sidebar: React.FC<SidebarProps> = ({
                             className={`algo-item-btn ${isActive ? 'is-active' : ''}`}
                             onClick={() => {
                               onSelectAlgorithm(algo.metadata.id);
-                              if (onCloseMobile) onCloseMobile();
+                              if (!isPinned) {
+                                onCloseDrawer?.();
+                                onCloseMobile?.();
+                              }
                             }}
                             disabled={disabled}
                             aria-current={isActive ? 'page' : undefined}

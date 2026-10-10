@@ -7,7 +7,9 @@ import { Controls } from './components/Controls/Controls';
 import { Metrics } from './components/Metrics/Metrics';
 import { Explanation } from './components/Explanation/Explanation';
 import { Sidebar } from './components/Navigation/Sidebar';
-import { ModeSwitcher } from './components/InteractiveLearning/ModeSwitcher';
+import { InstrumentNavbar } from './components/Navigation/InstrumentNavbar';
+import { KeyboardShortcutsModal } from './components/Navigation/KeyboardShortcutsModal';
+import { LandingPage } from './components/Landing/LandingPage';
 import { ChallengeView } from './components/InteractiveLearning/ChallengeView';
 import { WorkbenchDesk } from './components/Workbench/WorkbenchDesk';
 import { generateChallenge } from './learning/challengeEngine';
@@ -22,26 +24,57 @@ import type { AnyAlgorithmStep, StepPointers } from './algorithms/types';
 import type { LearningMode, UserProgressData } from './learning/types';
 import './App.css';
 
+const parseHashRoute = () => {
+  if (typeof window === 'undefined') return { view: 'landing' as const, algoId: undefined };
+  const hash = window.location.hash;
+  if (hash.startsWith('#lab')) {
+    const match = hash.match(/algo=([a-z0-9-]+)/i);
+    return { view: 'lab' as const, algoId: match ? match[1] : undefined };
+  }
+  return { view: 'landing' as const, algoId: undefined };
+};
+
 export const App: React.FC = () => {
+  // Hash-based view state ('landing' | 'lab')
+  const [currentView, setCurrentView] = useState<'landing' | 'lab'>(() => parseHashRoute().view);
+
   // Load persistent user progress from storage
   const [userProgress, setUserProgress] = useState<UserProgressData>(() => loadUserProgress());
 
-  // Determine initial algorithm: restore last explored or default to 'linear-search'
+  // Determine initial algorithm: URL hash param, or last explored, or default 'linear-search'
+  const initialRouteAlgo = parseHashRoute().algoId;
   const initialAlgoId =
-    userProgress.lastExploredAlgoId && getAlgorithmById(userProgress.lastExploredAlgoId)
+    initialRouteAlgo && getAlgorithmById(initialRouteAlgo)
+      ? initialRouteAlgo
+      : userProgress.lastExploredAlgoId && getAlgorithmById(userProgress.lastExploredAlgoId)
       ? userProgress.lastExploredAlgoId
       : 'linear-search';
 
   const [selectedAlgoId, setSelectedAlgoId] = useState<string>(initialAlgoId);
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isCurriculumDrawerOpen, setIsCurriculumDrawerOpen] = useState(false);
+  const [isSidebarPinned, setIsSidebarPinned] = useState(false);
+  const [isShortcutsModalOpen, setIsShortcutsModalOpen] = useState(false);
   const [learningMode, setLearningMode] = useState<LearningMode>('explore');
   const [lastChallengeResult, setLastChallengeResult] = useState<{
     isCorrect: boolean;
     concept?: string;
   } | null>(null);
 
+  // Listen for browser hash transitions
+  useEffect(() => {
+    const handleHashChange = () => {
+      const { view, algoId } = parseHashRoute();
+      setCurrentView(view);
+      if (algoId && getAlgorithmById(algoId)) {
+        setSelectedAlgoId(algoId);
+      }
+    };
+    window.addEventListener('hashchange', handleHashChange);
+    return () => window.removeEventListener('hashchange', handleHashChange);
+  }, []);
+
   // Input dataset state
-  const targetAlgoInitial = getAlgorithmById(initialAlgoId);
+  const targetAlgoInitial = getAlgorithmById(selectedAlgoId) || ALGORITHM_REGISTRY['linear-search'];
   const [array, setArray] = useState<number[]>(
     targetAlgoInitial?.defaultInput.array && targetAlgoInitial.defaultInput.array.length > 0
       ? targetAlgoInitial.defaultInput.array
@@ -110,7 +143,27 @@ export const App: React.FC = () => {
         setTarget(targetAlgo.defaultInput.target);
       }
     }
+
+    if (window.location.hash.startsWith('#lab')) {
+      window.location.hash = `#lab?algo=${id}`;
+    }
   }, []);
+
+  const handleEnterLab = (algoId?: string) => {
+    const id = algoId || selectedAlgoId;
+    if (algoId) {
+      handleSelectAlgorithm(algoId);
+    }
+    window.location.hash = `#lab?algo=${id}`;
+    setCurrentView('lab');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const handleNavigateHome = () => {
+    window.location.hash = '#';
+    setCurrentView('landing');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
 
   const handleUpdateData = (newArray: number[], newTarget: number) => {
     setArray(newArray);
@@ -151,36 +204,62 @@ export const App: React.FC = () => {
           targetEl.isContentEditable);
 
       if (e.key === 'Escape') {
-        if (isMobileMenuOpen) {
-          setIsMobileMenuOpen(false);
+        if (isShortcutsModalOpen) {
+          setIsShortcutsModalOpen(false);
+          return;
         }
-        return;
+        if (isCurriculumDrawerOpen) {
+          setIsCurriculumDrawerOpen(false);
+          return;
+        }
       }
 
       if (isTextInput) return;
 
-      if (e.code === 'Space') {
+      if (e.key === '?' || (e.shiftKey && e.key === '/')) {
         e.preventDefault();
-        if (isPlaying) {
-          pause();
-        } else {
-          play();
+        setIsShortcutsModalOpen((prev) => !prev);
+        return;
+      }
+
+      if (currentView === 'lab') {
+        if ((e.key === 'c' || e.key === 'C') && !e.ctrlKey && !e.metaKey) {
+          e.preventDefault();
+          setIsCurriculumDrawerOpen((prev) => !prev);
+          return;
         }
-      } else if (e.key === 'ArrowRight') {
-        e.preventDefault();
-        stepForward();
-      } else if (e.key === 'ArrowLeft') {
-        e.preventDefault();
-        stepBackward();
-      } else if (e.key === 'Home') {
-        e.preventDefault();
-        reset();
+
+        if (e.key === '1') {
+          setLearningMode('explore');
+        } else if (e.key === '2') {
+          setLearningMode('guided');
+        } else if (e.key === '3') {
+          setLearningMode('challenge');
+        }
+
+        if (e.code === 'Space') {
+          e.preventDefault();
+          if (isPlaying) {
+            pause();
+          } else {
+            play();
+          }
+        } else if (e.key === 'ArrowRight') {
+          e.preventDefault();
+          stepForward();
+        } else if (e.key === 'ArrowLeft') {
+          e.preventDefault();
+          stepBackward();
+        } else if (e.key === 'Home') {
+          e.preventDefault();
+          reset();
+        }
       }
     };
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [isPlaying, play, pause, stepForward, stepBackward, reset, isMobileMenuOpen]);
+  }, [isPlaying, play, pause, stepForward, stepBackward, reset, isCurriculumDrawerOpen, isShortcutsModalOpen, currentView]);
 
   // Type guards for step properties
   const currentIndex =
@@ -196,217 +275,210 @@ export const App: React.FC = () => {
   const categoryIndex = CATEGORIES.findIndex((c) => c.id === metadata.category);
   const chapterNumber = String(categoryIndex >= 0 ? categoryIndex + 1 : 1).padStart(2, '0');
 
-  return (
-    <div className="app-layout">
-      {/* Mobile Top Navigation Bar */}
-      <div className="mobile-top-bar" role="banner">
-        <span className="mobile-brand-title">ALGOLENS 2.0</span>
-        <button
-          type="button"
-          className="mobile-curriculum-toggle"
-          onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-          aria-label="Toggle Curriculum Navigation"
-          aria-expanded={isMobileMenuOpen}
-        >
-          ☰ Curriculum
-        </button>
-      </div>
-
-      {/* Curriculum Navigation Sidebar */}
-      <Sidebar
-        activeAlgorithmId={selectedAlgoId}
-        disabled={isPlaying}
-        onSelectAlgorithm={handleSelectAlgorithm}
-        isOpenMobile={isMobileMenuOpen}
-        onCloseMobile={() => setIsMobileMenuOpen(false)}
+  // Render Dedicated Landing Page when view === 'landing'
+  if (currentView === 'landing') {
+    return (
+      <LandingPage
+        onEnterLab={handleEnterLab}
         completedAlgoIds={userProgress.completedAlgoIds}
-        recentlyExploredIds={userProgress.recentlyExploredIds}
         challengeStats={userProgress.challengeStats}
-        onResetProgress={handleResetAllProgress}
+      />
+    );
+  }
+
+  // Render Reconceived Learning Laboratory when view === 'lab'
+  return (
+    <div className={`app-layout ${isSidebarPinned ? 'sidebar-pinned-layout' : ''}`}>
+      {/* Sleek Master Instrument Top Navigation Bar */}
+      <InstrumentNavbar
+        onNavigateHome={handleNavigateHome}
+        activeAlgorithmName={metadata.name}
+        chapterNumber={chapterNumber}
+        categoryName={metadata.category}
+        isCurriculumOpen={isCurriculumDrawerOpen}
+        onToggleCurriculum={() => setIsCurriculumDrawerOpen((prev) => !prev)}
+        learningMode={learningMode}
+        onModeChange={setLearningMode}
+        completedCount={userProgress.completedAlgoIds.length}
+        totalAlgorithms={Object.keys(ALGORITHM_REGISTRY).length}
+        challengeStreak={userProgress.challengeStats.streak}
+        onOpenShortcutsModal={() => setIsShortcutsModalOpen(true)}
       />
 
-      {/* Main Algorithm Exploration Stage */}
-      <main className="main-stage" id="main-content">
-        {/* Lab Algorithm Lesson Header */}
-        <header className="lab-header">
-          <div className="chapter-eyebrow">
-            <span className="eyebrow-chapter">CHAPTER {chapterNumber}</span>
-            <span className="eyebrow-sep">/</span>
-            <span className="eyebrow-category">{metadata.category.toUpperCase()}</span>
-          </div>
+      <div className="main-stage-wrapper">
+        {/* Slide-over or Pinned Curriculum Drawer */}
+        <Sidebar
+          activeAlgorithmId={selectedAlgoId}
+          disabled={isPlaying}
+          onSelectAlgorithm={handleSelectAlgorithm}
+          isOpenDrawer={isCurriculumDrawerOpen}
+          onCloseDrawer={() => setIsCurriculumDrawerOpen(false)}
+          isPinned={isSidebarPinned}
+          onTogglePin={() => setIsSidebarPinned((prev) => !prev)}
+          completedAlgoIds={userProgress.completedAlgoIds}
+          recentlyExploredIds={userProgress.recentlyExploredIds}
+          challengeStats={userProgress.challengeStats}
+          onResetProgress={handleResetAllProgress}
+        />
 
-          <div className="title-row">
-            <h1 className="algorithm-hero-title">{metadata.name}</h1>
-            <div className="difficulty-tag">
-              <span className="difficulty-dot" />
-              <span>{metadata.difficulty}</span>
-            </div>
-          </div>
-
-          <p className="algorithm-lesson-thesis">
-            {metadata.keyIdea}
-          </p>
-
-          {/* Compact Inline Complexity Specs Bar */}
-          <div className="complexity-spec-bar" role="group" aria-label="Complexity Specifications">
-            <div className="spec-col">
-              <span className="spec-label">BEST</span>
-              <span className="spec-value">{metadata.timeComplexity.best}</span>
-            </div>
-            <div className="spec-divider" />
-            <div className="spec-col">
-              <span className="spec-label">AVERAGE</span>
-              <span className="spec-value">{metadata.timeComplexity.average}</span>
-            </div>
-            <div className="spec-divider" />
-            <div className="spec-col">
-              <span className="spec-label">WORST</span>
-              <span className="spec-value">{metadata.timeComplexity.worst}</span>
-            </div>
-            <div className="spec-divider" />
-            <div className="spec-col">
-              <span className="spec-label">SPACE</span>
-              <span className="spec-value">{metadata.spaceComplexity}</span>
-            </div>
-            {metadata.prerequisites.length > 0 && (
-              <>
-                <div className="spec-divider" />
-                <div className="spec-col prereq-col">
-                  <span className="spec-label">PREREQUISITE</span>
-                  <span className="spec-value prereq-val">{metadata.prerequisites.join(' • ')}</span>
+        {/* Main Algorithm Exploration Stage */}
+        <main className="main-stage" id="main-content">
+          {/* Unified Master Laboratory Instrument Console */}
+          <div className="lab-instrument-console" aria-label="Algorithm Laboratory Instrument">
+            {/* Console Crown: Title, Category, Difficulty & Integrated Complexity Plaque */}
+            <header className="instrument-crown">
+              <div className="crown-title-group">
+                <div className="chapter-eyebrow">
+                  <span className="eyebrow-chapter">CHAPTER {chapterNumber}</span>
+                  <span className="eyebrow-sep">/</span>
+                  <span className="eyebrow-category">{metadata.category.toUpperCase()}</span>
+                  <span className="eyebrow-difficulty">{metadata.difficulty}</span>
                 </div>
-              </>
+
+                <h1 className="instrument-title">{metadata.name}</h1>
+                <p className="instrument-thesis">{metadata.keyIdea}</p>
+              </div>
+
+              {/* Compact Inline Complexity Specs Plaque */}
+              <div className="complexity-plaque" role="group" aria-label="Complexity Specifications">
+                <div className="plaque-col">
+                  <span className="plaque-lbl">BEST</span>
+                  <span className="plaque-val">{metadata.timeComplexity.best}</span>
+                </div>
+                <div className="plaque-divider" />
+                <div className="plaque-col">
+                  <span className="plaque-lbl">AVERAGE</span>
+                  <span className="plaque-val">{metadata.timeComplexity.average}</span>
+                </div>
+                <div className="plaque-divider" />
+                <div className="plaque-col">
+                  <span className="plaque-lbl">WORST</span>
+                  <span className="plaque-val">{metadata.timeComplexity.worst}</span>
+                </div>
+                <div className="plaque-divider" />
+                <div className="plaque-col">
+                  <span className="plaque-lbl">SPACE</span>
+                  <span className="plaque-val">{metadata.spaceComplexity}</span>
+                </div>
+              </div>
+            </header>
+
+            {/* Binary Search Sorted Requirement Notice (if unsorted) */}
+            {selectedAlgoId === 'binary-search' && !isCurrentArraySorted && (
+              <div className="requirement-notice-banner" role="alert">
+                <span>
+                  ⚠️ <strong>Requirement:</strong> Binary Search requires sorted input.
+                </span>
+                <button
+                  type="button"
+                  onClick={handleSortArray}
+                  disabled={isPlaying}
+                  className="req-btn"
+                >
+                  Sort Array Now
+                </button>
+              </div>
             )}
-          </div>
-        </header>
 
-        {/* Binary Search Sorted Requirement Notice */}
-        {selectedAlgoId === 'binary-search' && !isCurrentArraySorted && (
-          <div className="requirement-notice-banner" role="alert">
-            <span>
-              ⚠️ <strong>Requirement:</strong> Binary Search requires sorted input.
-            </span>
-            <button
-              type="button"
-              onClick={handleSortArray}
-              disabled={isPlaying}
-              className="req-btn"
-            >
-              Sort Array Now
-            </button>
-          </div>
-        )}
-
-        {/* Interactive Learning Mode Switcher Bar */}
-        <ModeSwitcher
-          currentMode={learningMode}
-          onModeChange={setLearningMode}
-          stats={userProgress.challengeStats}
-        />
-
-        {/* Teaching HUD (Heads-Up Display) */}
-        <Explanation
-          algorithmName={metadata.name}
-          description={
-            currentStep?.description || 'Select an algorithm or press Play to begin.'
-          }
-          currentStepIndex={currentStepIndex}
-          totalSteps={totalSteps}
-          mode={learningMode}
-        />
-
-        {/* Prediction Challenge Console (When in Challenge Mode) */}
-        {learningMode === 'challenge' && (
-          <ChallengeView
-            key={activeChallenge?.id || `idle-${currentStepIndex}`}
-            challenge={activeChallenge}
-            onAnswer={handleChallengeAnswer}
-            onContinue={handleChallengeContinue}
-            onExitChallenge={() => setLearningMode('explore')}
-            currentStepIndex={currentStepIndex}
-            totalSteps={totalSteps}
-            streak={userProgress.challengeStats.streak}
-          />
-        )}
-
-        {/* Dominant Visualizer Laboratory Stage */}
-        <div className="hero-stage-container" aria-label="Active Algorithm Workbench Stage">
-          {/* Technical Stage Top Navigation Banner */}
-          <div className="stage-header-bar">
-            <div className="stage-header-left">
-              <span className="stage-indicator-dot" />
-              <span className="stage-caption">
-                LIVE ALGORITHM CANVAS // {metadata.visualizationType.toUpperCase()}
-              </span>
+            {/* Embedded Active Learning Invariant / Challenge HUD */}
+            <div className="instrument-hud-area">
+              {learningMode === 'challenge' ? (
+                <ChallengeView
+                  key={activeChallenge?.id || `idle-${currentStepIndex}`}
+                  challenge={activeChallenge}
+                  onAnswer={handleChallengeAnswer}
+                  onContinue={handleChallengeContinue}
+                  onExitChallenge={() => setLearningMode('explore')}
+                  currentStepIndex={currentStepIndex}
+                  totalSteps={totalSteps}
+                  streak={userProgress.challengeStats.streak}
+                />
+              ) : (
+                <Explanation
+                  algorithmName={metadata.name}
+                  description={
+                    currentStep?.description || 'Select an algorithm or press Play to begin.'
+                  }
+                  currentStepIndex={currentStepIndex}
+                  totalSteps={totalSteps}
+                  mode={learningMode}
+                />
+              )}
             </div>
-            <div className="stage-header-right">
-              <span className="stage-coords-tag">ACTIVE TIMELINE SNAPSHOT</span>
+
+            {/* The Living Visualization Canvas */}
+            <div className="instrument-canvas-viewport">
+              <VisualizerHost step={currentStep} fallbackArray={array} />
+            </div>
+
+            {/* Integrated Docked Base Telemetry & Playback Deck */}
+            <div className="instrument-base-deck">
+              <Metrics
+                category={metadata.category}
+                target={target}
+                currentIndex={currentIndex}
+                pointers={pointers}
+                isFound={isFound}
+                foundIndex={foundIndex}
+                comparisons={
+                  typeof currentStep?.stats.comparisons === 'number'
+                    ? currentStep.stats.comparisons
+                    : 0
+                }
+                swaps={
+                  typeof currentStep?.stats.swaps === 'number'
+                    ? currentStep.stats.swaps
+                    : undefined
+                }
+                isCompleted={isCompleted}
+              />
+
+              <Controls
+                isPlaying={isPlaying}
+                canStepForward={currentStepIndex < totalSteps - 1}
+                canStepBackward={currentStepIndex > 0}
+                currentStepIndex={currentStepIndex}
+                totalSteps={totalSteps}
+                speedMs={speedMs}
+                onPlay={play}
+                onPause={pause}
+                onReset={reset}
+                onStepForward={stepForward}
+                onStepBackward={stepBackward}
+                onJumpToStep={jumpToStep}
+                onSpeedChange={setSpeed}
+              />
             </div>
           </div>
 
-          {/* Visualizer Hero Canvas */}
-          <section className="workbench-stage">
-            <VisualizerHost step={currentStep} fallbackArray={array} />
+          {/* Deep Secondary Study Desk */}
+          <section className="workbench-section" aria-label="Secondary Learning Workbench">
+            <WorkbenchDesk
+              metadata={metadata}
+              currentStep={currentStep}
+              currentStepIndex={currentStepIndex}
+              totalSteps={totalSteps}
+              sourceCode={metadata.sourceCode}
+              highlightLine={currentStep?.codeLine}
+              inputArray={array}
+              inputTarget={target}
+              lastChallengeResult={lastChallengeResult}
+              showArrayInput={showArrayInput}
+              isPlaying={isPlaying}
+              requireSorted={selectedAlgoId === 'binary-search'}
+              showTarget={metadata.category === 'searching' || selectedAlgoId === 'two-pointers'}
+              onUpdateData={handleUpdateData}
+              onSortArray={handleSortArray}
+            />
           </section>
+        </main>
+      </div>
 
-          {/* Precision Telemetry Strip Docked at Stage Base */}
-          <Metrics
-            category={metadata.category}
-            target={target}
-            currentIndex={currentIndex}
-            pointers={pointers}
-            isFound={isFound}
-            foundIndex={foundIndex}
-            comparisons={
-              typeof currentStep?.stats.comparisons === 'number'
-                ? currentStep.stats.comparisons
-                : 0
-            }
-            swaps={
-              typeof currentStep?.stats.swaps === 'number'
-                ? currentStep.stats.swaps
-                : undefined
-            }
-            isCompleted={isCompleted}
-          />
-        </div>
-
-        {/* Playback Transport Deck (Directly below stage) */}
-        <Controls
-          isPlaying={isPlaying}
-          canStepForward={currentStepIndex < totalSteps - 1}
-          canStepBackward={currentStepIndex > 0}
-          currentStepIndex={currentStepIndex}
-          totalSteps={totalSteps}
-          speedMs={speedMs}
-          onPlay={play}
-          onPause={pause}
-          onReset={reset}
-          onStepForward={stepForward}
-          onStepBackward={stepBackward}
-          onJumpToStep={jumpToStep}
-          onSpeedChange={setSpeed}
-        />
-
-        {/* Deep Interactive Laboratory Study Desk */}
-        <WorkbenchDesk
-          metadata={metadata}
-          currentStep={currentStep}
-          currentStepIndex={currentStepIndex}
-          totalSteps={totalSteps}
-          sourceCode={metadata.sourceCode}
-          highlightLine={currentStep?.codeLine}
-          inputArray={array}
-          inputTarget={target}
-          lastChallengeResult={lastChallengeResult}
-          showArrayInput={showArrayInput}
-          isPlaying={isPlaying}
-          requireSorted={selectedAlgoId === 'binary-search'}
-          showTarget={metadata.category === 'searching' || selectedAlgoId === 'two-pointers'}
-          onUpdateData={handleUpdateData}
-          onSortArray={handleSortArray}
-        />
-      </main>
+      {/* Keyboard Shortcuts Modal */}
+      <KeyboardShortcutsModal
+        isOpen={isShortcutsModalOpen}
+        onClose={() => setIsShortcutsModalOpen(false)}
+      />
     </div>
   );
 };
