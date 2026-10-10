@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from 'react';
-import { CATEGORIES, getAlgorithmsByCategory } from '../../algorithms/registry';
+import { CATEGORIES, getAlgorithmsByCategory, getAlgorithmById } from '../../algorithms/registry';
 import './Sidebar.css';
 
 interface SidebarProps {
@@ -8,6 +8,14 @@ interface SidebarProps {
   onSelectAlgorithm: (id: string) => void;
   isOpenMobile?: boolean;
   onCloseMobile?: () => void;
+  completedAlgoIds?: string[];
+  recentlyExploredIds?: string[];
+  challengeStats?: {
+    totalAttempted: number;
+    totalCorrect: number;
+    streak: number;
+  };
+  onResetProgress?: () => void;
 }
 
 export const Sidebar: React.FC<SidebarProps> = ({
@@ -16,6 +24,10 @@ export const Sidebar: React.FC<SidebarProps> = ({
   onSelectAlgorithm,
   isOpenMobile = false,
   onCloseMobile,
+  completedAlgoIds = [],
+  recentlyExploredIds = [],
+  challengeStats,
+  onResetProgress,
 }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [difficultyFilter, setDifficultyFilter] = useState<'all' | 'beginner' | 'intermediate'>('all');
@@ -43,17 +55,34 @@ export const Sidebar: React.FC<SidebarProps> = ({
   }, [searchTerm, difficultyFilter]);
 
   const totalAlgorithms = useMemo(() => {
-    return filteredCategories.reduce((acc, cat) => acc + cat.algorithms.length, 0);
+    return filteredCategories.reduce((acc, cat) => acc + cat.totalInCat, 0);
   }, [filteredCategories]);
+
+  const completedCount = completedAlgoIds.length;
+  const progressPercent = totalAlgorithms > 0 ? Math.round((completedCount / totalAlgorithms) * 100) : 0;
+
+  // Resolve recently explored algorithms
+  const recentAlgos = useMemo(() => {
+    return recentlyExploredIds
+      .map((id) => getAlgorithmById(id))
+      .filter((a): a is NonNullable<typeof a> => !!a)
+      .slice(0, 4);
+  }, [recentlyExploredIds]);
+
+  const handleResetClick = () => {
+    if (window.confirm('Reset all AlgoLens learning progress and challenge scores? This cannot be undone.')) {
+      onResetProgress?.();
+    }
+  };
 
   return (
     <>
       {/* Mobile Backdrop */}
       {isOpenMobile && (
-        <div className="sidebar-backdrop" onClick={onCloseMobile} />
+        <div className="sidebar-backdrop" onClick={onCloseMobile} aria-hidden="true" />
       )}
 
-      <aside className={`sidebar-curriculum ${isOpenMobile ? 'mobile-open' : ''}`}>
+      <aside className={`sidebar-curriculum ${isOpenMobile ? 'mobile-open' : ''}`} aria-label="Curriculum Navigation">
         {/* Brand Display Header */}
         <div className="sidebar-brand-box">
           <div className="brand-logo-lockup">
@@ -63,44 +92,103 @@ export const Sidebar: React.FC<SidebarProps> = ({
             </div>
             <div className="brand-text-stack">
               <span className="brand-text-primary">ALGO</span>
-              <span className="brand-text-secondary">LENS</span>
+              <span className="brand-text-secondary">LENS 2.0</span>
             </div>
           </div>
           <div className="brand-badge-status">
             <span className="pulse-indicator" />
-            <span>LABORATORY</span>
+            <span>LAB 2.0</span>
           </div>
         </div>
+
+        {/* Lightweight Progression Overview Card */}
+        <div className="sidebar-progress-card" role="region" aria-label="Learning Progression">
+          <div className="progress-card-top">
+            <div className="progress-metric-label">
+              <span>COMPLETION</span>
+              <strong className="progress-metric-val">{completedCount}/{totalAlgorithms} ({progressPercent}%)</strong>
+            </div>
+            {onResetProgress && completedCount > 0 && (
+              <button
+                type="button"
+                className="progress-reset-btn"
+                onClick={handleResetClick}
+                title="Reset Local Learning Progress"
+                aria-label="Reset Learning Progress"
+              >
+                Reset
+              </button>
+            )}
+          </div>
+
+          <div className="progress-bar-track">
+            <div className="progress-bar-fill" style={{ width: `${progressPercent}%` }} />
+          </div>
+
+          {challengeStats && challengeStats.totalAttempted > 0 && (
+            <div className="progress-challenge-stats">
+              <span>Challenge Accuracy:</span>
+              <strong>
+                {Math.round((challengeStats.totalCorrect / challengeStats.totalAttempted) * 100)}% ({challengeStats.totalCorrect}/{challengeStats.totalAttempted})
+              </strong>
+            </div>
+          )}
+        </div>
+
+        {/* Recently Explored Algorithms */}
+        {recentAlgos.length > 0 && !searchTerm && (
+          <div className="recent-algos-section">
+            <span className="recent-section-label">RECENTLY EXPLORED</span>
+            <div className="recent-chips-tray">
+              {recentAlgos.map((algo) => (
+                <button
+                  key={algo.metadata.id}
+                  type="button"
+                  className={`recent-chip ${algo.metadata.id === activeAlgorithmId ? 'active' : ''}`}
+                  onClick={() => {
+                    onSelectAlgorithm(algo.metadata.id);
+                    onCloseMobile?.();
+                  }}
+                  disabled={disabled}
+                >
+                  {algo.metadata.name}
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
 
         {/* Search & Filter Toolbar */}
         <div className="sidebar-search-area">
           <div className="search-input-wrapper">
-            <span className="search-icon">⌕</span>
+            <span className="search-icon" aria-hidden="true">⌕</span>
             <input
               type="text"
               className="curriculum-search-input"
               placeholder="Search algorithm or topic..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
+              aria-label="Search algorithms or concepts"
             />
             {searchTerm && (
               <button
                 type="button"
                 className="search-clear-btn"
                 onClick={() => setSearchTerm('')}
+                aria-label="Clear search"
               >
                 ✕
               </button>
             )}
           </div>
 
-          <div className="difficulty-segmented-control">
+          <div className="difficulty-segmented-control" role="group" aria-label="Filter by difficulty">
             <button
               type="button"
               className={`seg-btn ${difficultyFilter === 'all' ? 'active' : ''}`}
               onClick={() => setDifficultyFilter('all')}
             >
-              All ({totalAlgorithms})
+              All
             </button>
             <button
               type="button"
@@ -120,9 +208,9 @@ export const Sidebar: React.FC<SidebarProps> = ({
         </div>
 
         {/* Curriculum Navigation Section */}
-        <nav className="curriculum-nav">
+        <nav className="curriculum-nav" aria-label="Curriculum Chapters">
           <div className="curriculum-eyebrow">
-            <span>CURRICULUM</span>
+            <span>CHAPTERS</span>
           </div>
 
           <div className="curriculum-chapters-list">
@@ -140,6 +228,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                   <ul className="chapter-algo-list">
                     {cat.algorithms.map((algo) => {
                       const isActive = algo.metadata.id === activeAlgorithmId;
+                      const isCompleted = completedAlgoIds.includes(algo.metadata.id);
                       const isIntermediate = algo.metadata.difficulty === 'Intermediate';
 
                       return (
@@ -152,9 +241,15 @@ export const Sidebar: React.FC<SidebarProps> = ({
                               if (onCloseMobile) onCloseMobile();
                             }}
                             disabled={disabled}
+                            aria-current={isActive ? 'page' : undefined}
                           >
-                            <span className="algo-item-name">{algo.metadata.name}</span>
+                            <span className="algo-item-name">
+                              {algo.metadata.name}
+                            </span>
                             <div className="algo-item-meta">
+                              {isCompleted && (
+                                <span className="completed-check-icon" title="Completed">✓</span>
+                              )}
                               <span
                                 className={`diff-pip ${isIntermediate ? 'pip-intermediate' : 'pip-beginner'}`}
                                 title={algo.metadata.difficulty}

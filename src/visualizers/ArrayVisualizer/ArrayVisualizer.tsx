@@ -19,9 +19,9 @@ export const ArrayVisualizer: React.FC<ArrayVisualizerProps> = ({
     pointers?.left !== undefined && pointers?.right !== undefined;
 
   return (
-    <section className="array-stage">
+    <section className="array-stage" aria-label="Array Visualization Canvas">
       {/* Array Elements Workspace */}
-      <div className="array-track">
+      <div className="array-track" role="list">
         {array.map((value, idx) => {
           const state = elementStates[idx] || 'default';
 
@@ -40,6 +40,16 @@ export const ArrayVisualizer: React.FC<ArrayVisualizerProps> = ({
           if (pointers?.right === idx) {
             labels.push('RIGHT');
             primaryType = primaryType === 'current' ? 'right' : primaryType;
+          }
+          if (pointers) {
+            for (const [key, val] of Object.entries(pointers)) {
+              if (
+                val === idx &&
+                !['left', 'mid', 'right', 'current'].includes(key)
+              ) {
+                labels.push(key.toUpperCase());
+              }
+            }
           }
           if (
             labels.length === 0 &&
@@ -60,16 +70,16 @@ export const ArrayVisualizer: React.FC<ArrayVisualizerProps> = ({
             state !== 'discarded';
 
           return (
-            <div key={idx} className="array-column">
+            <div key={idx} className="array-column" role="listitem">
               {/* Physical Pointer Dock */}
               <div className="pointer-dock">
                 {hasPointer ? (
                   <div className={`physical-pointer pointer-${primaryType}`}>
                     <span className="pointer-name">{labels.join(' · ')}</span>
-                    <span className="pointer-stem-arrow">↓</span>
+                    <span className="pointer-stem-arrow" aria-hidden="true">↓</span>
                   </div>
                 ) : (
-                  <div className="pointer-placeholder" />
+                  <div className="pointer-placeholder" aria-hidden="true" />
                 )}
               </div>
 
@@ -78,6 +88,7 @@ export const ArrayVisualizer: React.FC<ArrayVisualizerProps> = ({
                 className={`array-element state-${state} ${
                   isInActiveRange ? 'is-active-range' : ''
                 }`}
+                title={`Index [${idx}]: Value ${value} (State: ${state})`}
               >
                 <span className="element-value">{value}</span>
               </div>
@@ -94,29 +105,29 @@ export const ArrayVisualizer: React.FC<ArrayVisualizerProps> = ({
       {/* Modern Streamlined State Legend */}
       <footer className="array-legend">
         <div className="legend-chip">
-          <span className="legend-pip pip-default" />
-          <span>Unvisited</span>
+          <span className="legend-pip pip-default" aria-hidden="true" />
+          <span>Default</span>
         </div>
         {hasRangePointers && (
           <div className="legend-chip">
-            <span className="legend-pip pip-active-range" />
+            <span className="legend-pip pip-active-range" aria-hidden="true" />
             <span>Active Range [L..R]</span>
           </div>
         )}
         <div className="legend-chip">
-          <span className="legend-pip pip-comparing" />
-          <span>Inspecting</span>
+          <span className="legend-pip pip-comparing" aria-hidden="true" />
+          <span>Evaluating</span>
         </div>
         <div className="legend-chip">
-          <span className="legend-pip pip-found" />
+          <span className="legend-pip pip-found" aria-hidden="true" />
           <span>Found / Target</span>
         </div>
         <div className="legend-chip">
-          <span className="legend-pip pip-sorted" />
+          <span className="legend-pip pip-sorted" aria-hidden="true" />
           <span>Sorted</span>
         </div>
         <div className="legend-chip">
-          <span className="legend-pip pip-discarded" />
+          <span className="legend-pip pip-discarded" aria-hidden="true" />
           <span>Discarded</span>
         </div>
       </footer>

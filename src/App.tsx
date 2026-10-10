@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect, useCallback } from 'react';
 import { ALGORITHM_REGISTRY, CATEGORIES, getAlgorithmById } from './algorithms/registry';
 import { isSorted } from './algorithms/searching/binarySearch';
 import { useAlgorithmPlayer } from './hooks/useAlgorithmPlayer';
@@ -12,16 +12,46 @@ import { CodeViewer } from './components/CodeViewer/CodeViewer';
 import { AlgorithmInfoGuide } from './components/AlgorithmInfoGuide/AlgorithmInfoGuide';
 import { SearchingComparison } from './components/SearchingComparison/SearchingComparison';
 import { AITutorPanel } from './components/AITutor/AITutorPanel';
+import { ModeSwitcher } from './components/InteractiveLearning/ModeSwitcher';
+import { ChallengeView } from './components/InteractiveLearning/ChallengeView';
+import { generateChallenge } from './learning/challengeEngine';
+import {
+  loadUserProgress,
+  recordExploredAlgorithm,
+  markAlgorithmCompleted,
+  recordChallengeResult,
+  resetUserProgress,
+} from './learning/progressStorage';
 import type { AnyAlgorithmStep, StepPointers } from './algorithms/types';
+import type { LearningMode, UserProgressData } from './learning/types';
 import './App.css';
 
 export const App: React.FC = () => {
-  const [selectedAlgoId, setSelectedAlgoId] = useState<string>('linear-search');
+  // Load persistent user progress from storage
+  const [userProgress, setUserProgress] = useState<UserProgressData>(() => loadUserProgress());
+
+  // Determine initial algorithm: restore last explored or default to 'linear-search'
+  const initialAlgoId =
+    userProgress.lastExploredAlgoId && getAlgorithmById(userProgress.lastExploredAlgoId)
+      ? userProgress.lastExploredAlgoId
+      : 'linear-search';
+
+  const [selectedAlgoId, setSelectedAlgoId] = useState<string>(initialAlgoId);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [learningMode, setLearningMode] = useState<LearningMode>('explore');
+  const [lastChallengeResult, setLastChallengeResult] = useState<{
+    isCorrect: boolean;
+    concept?: string;
+  } | null>(null);
 
   // Input dataset state
-  const [array, setArray] = useState<number[]>([15, 42, 8, 23, 74, 31, 90, 56]);
-  const [target, setTarget] = useState<number>(23);
+  const targetAlgoInitial = getAlgorithmById(initialAlgoId);
+  const [array, setArray] = useState<number[]>(
+    targetAlgoInitial?.defaultInput.array && targetAlgoInitial.defaultInput.array.length > 0
+      ? targetAlgoInitial.defaultInput.array
+      : [15, 42, 8, 23, 74, 31, 90, 56]
+  );
+  const [target, setTarget] = useState<number>(targetAlgoInitial?.defaultInput.target ?? 23);
 
   // Retrieve registered algorithm metadata and runner
   const currentAlgorithm = getAlgorithmById(selectedAlgoId) || ALGORITHM_REGISTRY['linear-search'];
@@ -46,11 +76,35 @@ export const App: React.FC = () => {
     reset,
     stepForward,
     stepBackward,
+    jumpToStep,
     setSpeed,
   } = useAlgorithmPlayer({ steps });
 
-  const handleSelectAlgorithm = (id: string) => {
+  // Generate real execution-grounded challenge for the active step
+  const activeChallenge = useMemo(() => {
+    return generateChallenge(selectedAlgoId, currentStepIndex, steps, metadata);
+  }, [selectedAlgoId, currentStepIndex, steps, metadata]);
+
+  // Pause playback automatically when reaching an active challenge in challenge mode
+  useEffect(() => {
+    if (learningMode === 'challenge' && isPlaying && activeChallenge) {
+      pause();
+    }
+  }, [learningMode, isPlaying, activeChallenge, pause]);
+
+  // Automatically mark algorithm as completed when the final step is reached
+  const isCompleted = totalSteps > 0 && currentStepIndex === totalSteps - 1;
+  useEffect(() => {
+    if (isCompleted && selectedAlgoId) {
+      setUserProgress((prev) => markAlgorithmCompleted(prev, selectedAlgoId));
+    }
+  }, [isCompleted, selectedAlgoId]);
+
+  const handleSelectAlgorithm = useCallback((id: string) => {
     setSelectedAlgoId(id);
+    setLastChallengeResult(null);
+    setUserProgress((prev) => recordExploredAlgorithm(prev, id));
+
     const targetAlgo = getAlgorithmById(id);
     if (targetAlgo) {
       if (targetAlgo.defaultInput.array && targetAlgo.defaultInput.array.length > 0) {
@@ -60,7 +114,7 @@ export const App: React.FC = () => {
         setTarget(targetAlgo.defaultInput.target);
       }
     }
-  };
+  }, []);
 
   const handleUpdateData = (newArray: number[], newTarget: number) => {
     setArray(newArray);
@@ -72,7 +126,65 @@ export const App: React.FC = () => {
     setArray(sorted);
   };
 
-  const isCompleted = totalSteps > 0 && currentStepIndex === totalSteps - 1;
+  const handleChallengeAnswer = (isCorrect: boolean) => {
+    setLastChallengeResult({
+      isCorrect,
+      concept: activeChallenge?.concept,
+    });
+    setUserProgress((prev) => recordChallengeResult(prev, isCorrect));
+  };
+
+  const handleChallengeContinue = () => {
+    stepForward();
+  };
+
+  const handleResetAllProgress = () => {
+    const resetData = resetUserProgress();
+    setUserProgress(resetData);
+  };
+
+  // Keyboard navigation & accessibility controls
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      const targetEl = e.target as HTMLElement | null;
+      const isTextInput =
+        targetEl &&
+        (targetEl.tagName === 'INPUT' ||
+          targetEl.tagName === 'TEXTAREA' ||
+          targetEl.tagName === 'SELECT' ||
+          targetEl.isContentEditable);
+
+      if (e.key === 'Escape') {
+        if (isMobileMenuOpen) {
+          setIsMobileMenuOpen(false);
+        }
+        return;
+      }
+
+      if (isTextInput) return;
+
+      if (e.code === 'Space') {
+        e.preventDefault();
+        if (isPlaying) {
+          pause();
+        } else {
+          play();
+        }
+      } else if (e.key === 'ArrowRight') {
+        e.preventDefault();
+        stepForward();
+      } else if (e.key === 'ArrowLeft') {
+        e.preventDefault();
+        stepBackward();
+      } else if (e.key === 'Home') {
+        e.preventDefault();
+        reset();
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isPlaying, play, pause, stepForward, stepBackward, reset, isMobileMenuOpen]);
 
   // Type guards for step properties
   const currentIndex =
@@ -85,19 +197,20 @@ export const App: React.FC = () => {
   const foundIndex = currentStep && 'foundIndex' in currentStep ? currentStep.foundIndex : undefined;
 
   const showArrayInput = metadata.visualizationType === 'array';
-
   const categoryIndex = CATEGORIES.findIndex((c) => c.id === metadata.category);
   const chapterNumber = String(categoryIndex >= 0 ? categoryIndex + 1 : 1).padStart(2, '0');
 
   return (
     <div className="app-layout">
       {/* Mobile Top Navigation Bar */}
-      <div className="mobile-top-bar">
-        <span className="mobile-brand-title">ALGOLENS</span>
+      <div className="mobile-top-bar" role="banner">
+        <span className="mobile-brand-title">ALGOLENS 2.0</span>
         <button
           type="button"
           className="mobile-curriculum-toggle"
           onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+          aria-label="Toggle Curriculum Navigation"
+          aria-expanded={isMobileMenuOpen}
         >
           ☰ Curriculum
         </button>
@@ -110,10 +223,14 @@ export const App: React.FC = () => {
         onSelectAlgorithm={handleSelectAlgorithm}
         isOpenMobile={isMobileMenuOpen}
         onCloseMobile={() => setIsMobileMenuOpen(false)}
+        completedAlgoIds={userProgress.completedAlgoIds}
+        recentlyExploredIds={userProgress.recentlyExploredIds}
+        challengeStats={userProgress.challengeStats}
+        onResetProgress={handleResetAllProgress}
       />
 
       {/* Main Algorithm Exploration Stage */}
-      <main className="main-stage">
+      <main className="main-stage" id="main-content">
         {/* Lab Algorithm Lesson Header */}
         <header className="lab-header">
           <div className="chapter-eyebrow">
@@ -135,7 +252,7 @@ export const App: React.FC = () => {
           </p>
 
           {/* Compact Inline Complexity Specs Bar */}
-          <div className="complexity-spec-bar">
+          <div className="complexity-spec-bar" role="group" aria-label="Complexity Specifications">
             <div className="spec-col">
               <span className="spec-label">BEST</span>
               <span className="spec-value">{metadata.timeComplexity.best}</span>
@@ -169,7 +286,7 @@ export const App: React.FC = () => {
 
         {/* Binary Search Sorted Requirement Notice */}
         {selectedAlgoId === 'binary-search' && !isCurrentArraySorted && (
-          <div className="requirement-notice-banner">
+          <div className="requirement-notice-banner" role="alert">
             <span>
               ⚠️ <strong>Requirement:</strong> Binary Search requires sorted input.
             </span>
@@ -184,6 +301,13 @@ export const App: React.FC = () => {
           </div>
         )}
 
+        {/* Interactive Learning Mode Switcher Bar */}
+        <ModeSwitcher
+          currentMode={learningMode}
+          onModeChange={setLearningMode}
+          stats={userProgress.challengeStats}
+        />
+
         {/* Teaching HUD (Heads-Up Display) */}
         <Explanation
           algorithmName={metadata.name}
@@ -192,10 +316,24 @@ export const App: React.FC = () => {
           }
           currentStepIndex={currentStepIndex}
           totalSteps={totalSteps}
+          mode={learningMode}
         />
 
+        {/* Prediction Challenge Console (When in Challenge Mode) */}
+        {learningMode === 'challenge' && (
+          <ChallengeView
+            challenge={activeChallenge}
+            onAnswer={handleChallengeAnswer}
+            onContinue={handleChallengeContinue}
+            onExitChallenge={() => setLearningMode('explore')}
+            currentStepIndex={currentStepIndex}
+            totalSteps={totalSteps}
+            streak={userProgress.challengeStats.streak}
+          />
+        )}
+
         {/* Visualizer Hero Workbench Canvas */}
-        <section className="workbench-stage">
+        <section className="workbench-stage" aria-label="Visualizer Stage">
           <VisualizerHost step={currentStep} fallbackArray={array} />
         </section>
 
@@ -233,6 +371,7 @@ export const App: React.FC = () => {
           onReset={reset}
           onStepForward={stepForward}
           onStepBackward={stepBackward}
+          onJumpToStep={jumpToStep}
           onSpeedChange={setSpeed}
         />
 
@@ -257,12 +396,15 @@ export const App: React.FC = () => {
             highlightLine={currentStep?.codeLine}
           />
 
-          {/* AI Laboratory Tutor Assistant Console */}
+          {/* Intelligent Laboratory Tutor Assistant Console */}
           <AITutorPanel
             metadata={metadata}
             currentStep={currentStep}
             currentStepIndex={currentStepIndex}
             totalSteps={totalSteps}
+            inputArray={array}
+            inputTarget={target}
+            lastChallengeResult={lastChallengeResult}
           />
 
           {/* Concept Reference: When, Why & Limitations */}

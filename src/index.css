@@ -1,48 +1,58 @@
 :root {
-  /* Color Palette: Deep Charcoal / Ink Laboratory */
+  /* Core Laboratory Surfaces (Section 3 Tokens) */
   --bg-canvas: #090d16;
-  --bg-surface: #0e1320;
-  --bg-surface-elevated: #141b2d;
-  --bg-surface-hover: #1c253d;
-  --bg-active: rgba(56, 189, 248, 0.12);
+  --bg-surface: #0e1422;
+  --bg-surface-elevated: #141d30;
+  --bg-surface-hover: #1c263d;
+  --bg-active: rgba(103, 214, 232, 0.12);
 
-  /* Borders & Dividers */
+  /* Precise Technical Borders */
   --border-subtle: rgba(255, 255, 255, 0.07);
-  --border-medium: rgba(255, 255, 255, 0.14);
-  --border-accent: rgba(56, 189, 248, 0.4);
+  --border-medium: #273246;
+  --border-accent: rgba(103, 214, 232, 0.45);
+  --border-elevated: #334155;
 
-  /* Typography Colors */
+  /* Typography Hierarchy */
   --text-primary: #f8fafc;
   --text-secondary: #94a3b8;
   --text-muted: #64748b;
   --text-faint: #475569;
 
-  /* Accent & Semantic System */
-  --accent-primary: #38bdf8;       /* Electric Sky / Cyan */
-  --accent-primary-hover: #0ea5e9;
-  --accent-glow: rgba(56, 189, 248, 0.35);
+  /* Semantic Action Palette */
+  --accent-cyan: #67d6e8;          /* Pointers, active index, primary navigation */
+  --accent-amber: #f5b544;         /* Comparisons, key evaluations */
+  --accent-coral: #ff786f;         /* Swaps, mutations, element displacements */
+  --accent-emerald: #42d6a0;       /* Successful matches, sorted elements, targets */
+  --accent-slate: #64748b;         /* Muted, out-of-range, or discarded elements */
+  --accent-violet: #818cf8;        /* Auxiliary markers, tree/graph frontiers */
 
-  --accent-secondary: #818cf8;     /* Indigo / Violet */
-  --accent-amber: #fbbf24;         /* Amber Comparing */
-  --accent-emerald: #34d399;       /* Emerald Sorted / Match */
-  --accent-rose: #f43f5e;          /* Rose Discard / Conflict */
-  --accent-coral: #fb923c;         /* Coral Swapping */
+  /* Backwards compatibility aliases */
+  --accent-primary: var(--accent-cyan);
+  --accent-primary-hover: #38bdf8;
+  --accent-glow: rgba(103, 214, 232, 0.25);
+  --accent-secondary: var(--accent-violet);
+  --accent-rose: #f43f5e;
 
   /* Radii */
+  --radius-xs: 3px;
   --radius-sm: 6px;
-  --radius-md: 10px;
-  --radius-lg: 16px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
   --radius-pill: 9999px;
 
-  /* Shadows */
-  --shadow-sm: 0 2px 6px rgba(0, 0, 0, 0.3);
-  --shadow-md: 0 6px 16px rgba(0, 0, 0, 0.4);
-  --shadow-lg: 0 12px 32px rgba(0, 0, 0, 0.5);
-  --shadow-glow: 0 0 24px var(--accent-glow);
+  /* Subtle Laboratory Shadows */
+  --shadow-sm: 0 2px 6px rgba(0, 0, 0, 0.35);
+  --shadow-md: 0 6px 16px rgba(0, 0, 0, 0.45);
+  --shadow-lg: 0 12px 28px rgba(0, 0, 0, 0.55);
+  --shadow-glow: 0 0 20px var(--accent-glow);
 
-  /* Fonts */
+  /* Typography Stacks */
   --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   --font-mono: 'JetBrains Mono', 'Fira Code', 'SF Mono', Menlo, Consolas, monospace;
+
+  /* Transitions */
+  --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-normal: 220ms cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 * {
@@ -61,9 +71,9 @@ body {
   line-height: 1.5;
   overflow-x: hidden;
   background-image:
-    radial-gradient(ellipse 90% 60% at 50% -10%, rgba(56, 189, 248, 0.07), transparent 70%),
-    radial-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px);
-  background-size: 100% 100%, 28px 28px;
+    radial-gradient(ellipse 90% 60% at 50% -10%, rgba(103, 214, 232, 0.05), transparent 70%),
+    radial-gradient(rgba(255, 255, 255, 0.025) 1px, transparent 1px);
+  background-size: 100% 100%, 24px 24px;
 }
 
 #root {
@@ -72,7 +82,7 @@ body {
   flex-direction: column;
 }
 
-/* Custom Scrollbar for Laboratory Feel */
+/* Custom Scrollbar for Technical Feel */
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;
@@ -89,4 +99,35 @@ body {
 
 ::-webkit-scrollbar-thumb:hover {
   background: rgba(255, 255, 255, 0.22);
+}
+
+/* Accessible Focus Ring */
+:focus-visible {
+  outline: 2px solid var(--accent-cyan);
+  outline-offset: 2px;
+}
+
+/* Screen reader utility */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Respect user's motion preferences */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }
