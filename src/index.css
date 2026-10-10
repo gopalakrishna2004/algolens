@@ -4,19 +4,19 @@
   --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   --font-mono: 'JetBrains Mono', 'Fira Code', 'SF Mono', Menlo, Consolas, monospace;
 
-  /* Ink & Deep Charcoal Foundations (Refined Technical Laboratory) */
-  --bg-canvas: #07090e;
-  --bg-surface: #0c1018;
-  --bg-surface-elevated: #121824;
-  --bg-surface-hover: #192132;
-  --bg-active: rgba(92, 225, 230, 0.12);
+  /* Architectural Warm Graphite Foundations */
+  --bg-canvas: #090a0f;
+  --bg-surface: #0f1118;
+  --bg-surface-elevated: #151822;
+  --bg-surface-hover: #1b1f2c;
+  --bg-active: rgba(56, 189, 248, 0.1);
 
-  /* Precise Architectural Borders */
-  --border-subtle: rgba(255, 255, 255, 0.06);
-  --border-medium: #1f2738;
-  --border-strong: #2a354c;
-  --border-accent: rgba(92, 225, 230, 0.45);
-  --border-elevated: #313e59;
+  /* Precise Architectural Hairline Dividers (Fewer heavy borders) */
+  --border-subtle: rgba(255, 255, 255, 0.07);
+  --border-medium: rgba(255, 255, 255, 0.12);
+  --border-strong: rgba(255, 255, 255, 0.22);
+  --border-accent: rgba(56, 189, 248, 0.4);
+  --border-elevated: rgba(255, 255, 255, 0.16);
 
   /* High-Contrast Typography Hierarchy */
   --text-primary: #f8fafc;
@@ -24,18 +24,18 @@
   --text-muted: #64748b;
   --text-faint: #475569;
 
-  /* Restrained Semantic Action Palette */
-  --accent-cyan: #5ce1e6;          /* Pointers, active index, primary navigation */
-  --accent-amber: #f5b544;         /* Active comparisons, evaluating invariants */
-  --accent-coral: #ff786f;         /* Swaps, mutations, element displacements */
-  --accent-emerald: #3dd99e;       /* Successful matches, sorted elements, targets */
-  --accent-slate: #62728c;         /* Discarded, out-of-range, inactive */
-  --accent-violet: #818cf8;        /* Auxiliary markers, tree/graph frontiers */
+  /* Sophisticated Semantic Palette (Purpose-driven, not fluorescent) */
+  --accent-cyan: #38bdf8;          /* Pointers, active indices, navigational focus */
+  --accent-amber: #f59e0b;         /* Active comparisons, evaluating invariants */
+  --accent-coral: #fb7185;         /* Swaps, mutations, element displacements */
+  --accent-emerald: #34d399;       /* Matches, sorted domains, discovered targets */
+  --accent-slate: #64748b;         /* Discarded, out-of-range elements */
+  --accent-violet: #a78bfa;        /* Memory structures, tree & graph frontiers */
 
   /* Backwards compatibility aliases */
   --accent-primary: var(--accent-cyan);
-  --accent-primary-hover: #38bdf8;
-  --accent-glow: rgba(92, 225, 230, 0.22);
+  --accent-primary-hover: #0284c7;
+  --accent-glow: rgba(56, 189, 248, 0.16);
   --accent-secondary: var(--accent-violet);
   --accent-rose: #f43f5e;
 
@@ -46,11 +46,11 @@
   --radius-lg: 14px;
   --radius-pill: 9999px;
 
-  /* Tactile Precision Shadows */
-  --shadow-sm: 0 2px 6px rgba(0, 0, 0, 0.4);
-  --shadow-md: 0 8px 20px rgba(0, 0, 0, 0.5);
-  --shadow-lg: 0 16px 36px rgba(0, 0, 0, 0.65);
-  --shadow-glow: 0 0 24px var(--accent-glow);
+  /* Tactile Editorial Shadows */
+  --shadow-sm: 0 2px 6px rgba(0, 0, 0, 0.35);
+  --shadow-md: 0 10px 24px -6px rgba(0, 0, 0, 0.6);
+  --shadow-lg: 0 20px 48px -10px rgba(0, 0, 0, 0.75);
+  --shadow-glow: 0 0 20px var(--accent-glow);
 
   /* Motion Timing */
   --transition-fast: 140ms cubic-bezier(0.16, 1, 0.3, 1);

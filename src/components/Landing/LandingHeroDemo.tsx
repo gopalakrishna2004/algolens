@@ -9,9 +9,10 @@ interface LandingHeroDemoProps {
 }
 
 const HERO_DEMO_ALGOS = [
-  { id: 'binary-search', label: 'Binary Search', tag: 'Ch. 01 Searching' },
-  { id: 'bubble-sort', label: 'Bubble Sort', tag: 'Ch. 02 Sorting' },
-  { id: 'bfs', label: 'Breadth-First Search', tag: 'Ch. 05 Graphs' },
+  { id: 'binary-search', label: 'Binary Search', chapter: '01', category: 'Searching' },
+  { id: 'bubble-sort', label: 'Bubble Sort', chapter: '02', category: 'Sorting' },
+  { id: 'quick-sort', label: 'Quick Sort', chapter: '02', category: 'Sorting' },
+  { id: 'bfs', label: 'BFS Graph', chapter: '05', category: 'Graphs' },
 ];
 
 export const LandingHeroDemo: React.FC<LandingHeroDemoProps> = ({ onOpenLabWithAlgo }) => {
@@ -21,11 +22,11 @@ export const LandingHeroDemo: React.FC<LandingHeroDemoProps> = ({ onOpenLabWithA
     return getAlgorithmById(selectedDemoId) || getAlgorithmById('binary-search')!;
   }, [selectedDemoId]);
 
-  // Compute real execution steps
+  // Compute real execution steps from the actual algorithm engine
   const steps: AnyAlgorithmStep[] = useMemo(() => {
     return algoDef.run({
-      array: algoDef.defaultInput.array || [12, 24, 32, 45, 57, 68, 81, 99],
-      target: algoDef.defaultInput.target ?? 57,
+      array: algoDef.defaultInput.array || [14, 28, 36, 49, 62, 75, 88, 97],
+      target: algoDef.defaultInput.target ?? 62,
     });
   }, [algoDef]);
 
@@ -44,129 +45,143 @@ export const LandingHeroDemo: React.FC<LandingHeroDemoProps> = ({ onOpenLabWithA
 
   const currentStepNum = totalSteps > 0 ? String(currentStepIndex + 1).padStart(2, '0') : '00';
   const totalStepsNum = totalSteps > 0 ? String(totalSteps).padStart(2, '0') : '00';
+  const progressRatio = totalSteps > 0 ? ((currentStepIndex + 1) / totalSteps) * 100 : 0;
 
   return (
-    <div className="hero-demo-console">
-      {/* Console Top Toolbar */}
-      <div className="hero-demo-topbar">
-        <div className="demo-algo-switcher" role="tablist" aria-label="Demo Algorithm Selector">
-          {HERO_DEMO_ALGOS.map((item) => (
-            <button
-              key={item.id}
-              type="button"
-              role="tab"
-              aria-selected={selectedDemoId === item.id}
-              className={`demo-tab-btn ${selectedDemoId === item.id ? 'is-active' : ''}`}
-              onClick={() => {
-                setSelectedDemoId(item.id);
-                reset();
-              }}
-            >
-              <span className="demo-tab-dot" />
-              <span>{item.label}</span>
-            </button>
-          ))}
+    <div className="aperture-stage-root">
+      {/* Top Architectural Roster & Selector */}
+      <div className="aperture-top-roster">
+        <div className="aperture-algo-tabs" role="tablist" aria-label="Aperture Algorithm Demonstrations">
+          {HERO_DEMO_ALGOS.map((item) => {
+            const isActive = selectedDemoId === item.id;
+            return (
+              <button
+                key={item.id}
+                type="button"
+                role="tab"
+                aria-selected={isActive}
+                className={`aperture-tab-item ${isActive ? 'is-active' : ''}`}
+                onClick={() => {
+                  setSelectedDemoId(item.id);
+                  reset();
+                }}
+              >
+                <span className="tab-chapter-tag">{item.chapter}</span>
+                <span className="tab-name">{item.label}</span>
+                {isActive && <span className="tab-active-pip" />}
+              </button>
+            );
+          })}
         </div>
 
-        <button
-          type="button"
-          className="demo-open-lab-btn"
-          onClick={() => onOpenLabWithAlgo(selectedDemoId)}
-          title="Open this algorithm in the full Laboratory"
-        >
-          <span>Open in Lab</span>
-          <span className="arrow-glyph" aria-hidden="true">↗</span>
-        </button>
-      </div>
+        <div className="aperture-header-actions">
+          <div className="aperture-step-counter">
+            <span className="counter-lbl">FRAME</span>
+            <span className="counter-val">{currentStepNum} / {totalStepsNum}</span>
+          </div>
 
-      {/* Real Algorithm Visualizer Stage */}
-      <div className="hero-demo-canvas-viewport">
-        <div className="hero-demo-canvas-inner">
-          <VisualizerHost
-            step={currentStep}
-            fallbackArray={algoDef.defaultInput.array || [12, 24, 32, 45, 57, 68, 81, 99]}
-          />
-        </div>
-      </div>
-
-      {/* Step Explanation Callout */}
-      <div className="hero-demo-step-hud">
-        <div className="demo-hud-step-tag">
-          <span className="pulse-beacon" />
-          <span>STEP {currentStepNum} / {totalStepsNum}</span>
-        </div>
-        <p className="demo-hud-explanation">
-          {currentStep?.description || 'Press Play or Step Forward to observe execution.'}
-        </p>
-      </div>
-
-      {/* Interactive Controls & Timeline Scrubbing */}
-      <div className="hero-demo-controls">
-        <div className="demo-playback-buttons">
           <button
             type="button"
-            className="demo-ctrl-btn"
-            onClick={reset}
-            title="Reset to step 0"
-            aria-label="Reset demonstration"
+            className="aperture-open-lab-cta"
+            onClick={() => onOpenLabWithAlgo(selectedDemoId)}
+            title={`Launch ${algoDef.metadata.name} in the full Laboratory`}
           >
-            ↺
-          </button>
-          <button
-            type="button"
-            className="demo-ctrl-btn"
-            onClick={stepBackward}
-            disabled={currentStepIndex <= 0 || isPlaying}
-            title="Step Back"
-            aria-label="Step back"
-          >
-            ◀
-          </button>
-          {isPlaying ? (
-            <button
-              type="button"
-              className="demo-ctrl-btn is-play"
-              onClick={pause}
-              title="Pause"
-              aria-label="Pause playback"
-            >
-              ⏸ Pause
-            </button>
-          ) : (
-            <button
-              type="button"
-              className="demo-ctrl-btn is-play"
-              onClick={play}
-              disabled={currentStepIndex >= totalSteps - 1}
-              title="Play"
-              aria-label="Play execution"
-            >
-              ▶ Play
-            </button>
-          )}
-          <button
-            type="button"
-            className="demo-ctrl-btn"
-            onClick={stepForward}
-            disabled={currentStepIndex >= totalSteps - 1 || isPlaying}
-            title="Step Forward"
-            aria-label="Step forward"
-          >
-            ▶
+            <span>Inspect in Laboratory</span>
+            <span className="cta-arrow-symbol" aria-hidden="true">↗</span>
           </button>
         </div>
+      </div>
 
-        {/* Timeline Scrubber */}
-        <div className="demo-scrubber-container">
-          <input
-            type="range"
-            min={0}
-            max={Math.max(0, totalSteps - 1)}
-            value={currentStepIndex}
-            onChange={(e) => jumpToStep(Number(e.target.value))}
-            className="demo-scrubber-slider"
-            aria-label="Demonstration Timeline Scrubber"
-          />
+      {/* Thin Progress Rail */}
+      <div className="aperture-progress-rail">
+        <div className="aperture-progress-gauge" style={{ width: `${progressRatio}%` }} />
+      </div>
+
+      {/* Main Living Canvas Floor */}
+      <div className="aperture-canvas-floor">
+        <VisualizerHost
+          step={currentStep}
+          fallbackArray={algoDef.defaultInput.array || [14, 28, 36, 49, 62, 75, 88, 97]}
+        />
+      </div>
+
+      {/* Docked Interaction Deck: Step Explanation & Transport */}
+      <div className="aperture-dock-deck">
+        <div className="dock-explanation-marginalia">
+          <span className="dock-action-tag">ACTION</span>
+          <p className="dock-explanation-text">
+            {currentStep?.description || 'Select an algorithm or trigger Play to observe live state transitions.'}
+          </p>
+        </div>
+
+        <div className="dock-controls-cluster">
+          {/* Timeline Scrubber */}
+          <div className="dock-scrubber-unit">
+            <input
+              type="range"
+              min={0}
+              max={Math.max(0, totalSteps - 1)}
+              value={currentStepIndex}
+              onChange={(e) => jumpToStep(Number(e.target.value))}
+              className="dock-scrubber-input"
+              aria-label="Timeline Scrubber"
+            />
+          </div>
+
+          {/* Transport Buttons */}
+          <div className="dock-button-group">
+            <button
+              type="button"
+              className="dock-ctrl-btn"
+              onClick={reset}
+              title="Reset Timeline to Frame 0"
+              aria-label="Reset Timeline"
+            >
+              ↺
+            </button>
+            <button
+              type="button"
+              className="dock-ctrl-btn"
+              onClick={stepBackward}
+              disabled={currentStepIndex <= 0 || isPlaying}
+              title="Step Backward (Left Arrow)"
+              aria-label="Step Backward"
+            >
+              ◀
+            </button>
+            {isPlaying ? (
+              <button
+                type="button"
+                className="dock-ctrl-btn is-playback-active"
+                onClick={pause}
+                title="Pause Timeline (Space)"
+                aria-label="Pause"
+              >
+                ⏸ Pause
+              </button>
+            ) : (
+              <button
+                type="button"
+                className="dock-ctrl-btn is-playback-trigger"
+                onClick={play}
+                disabled={currentStepIndex >= totalSteps - 1}
+                title="Play Timeline (Space)"
+                aria-label="Play"
+              >
+                ▶ Play
+              </button>
+            )}
+            <button
+              type="button"
+              className="dock-ctrl-btn"
+              onClick={stepForward}
+              disabled={currentStepIndex >= totalSteps - 1 || isPlaying}
+              title="Step Forward (Right Arrow)"
+              aria-label="Step Forward"
+            >
+              ▶
+            </button>
+          </div>
         </div>
       </div>
     </div>
