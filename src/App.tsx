@@ -6,14 +6,10 @@ import { VisualizerHost } from './visualizers/VisualizerHost';
 import { Controls } from './components/Controls/Controls';
 import { Metrics } from './components/Metrics/Metrics';
 import { Explanation } from './components/Explanation/Explanation';
-import { DataInput } from './components/DataInput/DataInput';
 import { Sidebar } from './components/Navigation/Sidebar';
-import { CodeViewer } from './components/CodeViewer/CodeViewer';
-import { AlgorithmInfoGuide } from './components/AlgorithmInfoGuide/AlgorithmInfoGuide';
-import { SearchingComparison } from './components/SearchingComparison/SearchingComparison';
-import { AITutorPanel } from './components/AITutor/AITutorPanel';
 import { ModeSwitcher } from './components/InteractiveLearning/ModeSwitcher';
 import { ChallengeView } from './components/InteractiveLearning/ChallengeView';
+import { WorkbenchDesk } from './components/Workbench/WorkbenchDesk';
 import { generateChallenge } from './learning/challengeEngine';
 import {
   loadUserProgress,
@@ -322,6 +318,7 @@ export const App: React.FC = () => {
         {/* Prediction Challenge Console (When in Challenge Mode) */}
         {learningMode === 'challenge' && (
           <ChallengeView
+            key={activeChallenge?.id || `idle-${currentStepIndex}`}
             challenge={activeChallenge}
             onAnswer={handleChallengeAnswer}
             onContinue={handleChallengeContinue}
@@ -332,33 +329,49 @@ export const App: React.FC = () => {
           />
         )}
 
-        {/* Visualizer Hero Workbench Canvas */}
-        <section className="workbench-stage" aria-label="Visualizer Stage">
-          <VisualizerHost step={currentStep} fallbackArray={array} />
-        </section>
+        {/* Dominant Visualizer Laboratory Stage */}
+        <div className="hero-stage-container" aria-label="Active Algorithm Workbench Stage">
+          {/* Technical Stage Top Navigation Banner */}
+          <div className="stage-header-bar">
+            <div className="stage-header-left">
+              <span className="stage-indicator-dot" />
+              <span className="stage-caption">
+                LIVE ALGORITHM CANVAS // {metadata.visualizationType.toUpperCase()}
+              </span>
+            </div>
+            <div className="stage-header-right">
+              <span className="stage-coords-tag">ACTIVE TIMELINE SNAPSHOT</span>
+            </div>
+          </div>
 
-        {/* Precision Telemetry Strip */}
-        <Metrics
-          category={metadata.category}
-          target={target}
-          currentIndex={currentIndex}
-          pointers={pointers}
-          isFound={isFound}
-          foundIndex={foundIndex}
-          comparisons={
-            typeof currentStep?.stats.comparisons === 'number'
-              ? currentStep.stats.comparisons
-              : 0
-          }
-          swaps={
-            typeof currentStep?.stats.swaps === 'number'
-              ? currentStep.stats.swaps
-              : undefined
-          }
-          isCompleted={isCompleted}
-        />
+          {/* Visualizer Hero Canvas */}
+          <section className="workbench-stage">
+            <VisualizerHost step={currentStep} fallbackArray={array} />
+          </section>
 
-        {/* Playback Transport Deck */}
+          {/* Precision Telemetry Strip Docked at Stage Base */}
+          <Metrics
+            category={metadata.category}
+            target={target}
+            currentIndex={currentIndex}
+            pointers={pointers}
+            isFound={isFound}
+            foundIndex={foundIndex}
+            comparisons={
+              typeof currentStep?.stats.comparisons === 'number'
+                ? currentStep.stats.comparisons
+                : 0
+            }
+            swaps={
+              typeof currentStep?.stats.swaps === 'number'
+                ? currentStep.stats.swaps
+                : undefined
+            }
+            isCompleted={isCompleted}
+          />
+        </div>
+
+        {/* Playback Transport Deck (Directly below stage) */}
         <Controls
           isPlaying={isPlaying}
           canStepForward={currentStepIndex < totalSteps - 1}
@@ -375,44 +388,24 @@ export const App: React.FC = () => {
           onSpeedChange={setSpeed}
         />
 
-        {/* Deep Interactive Exploration Section (Developer Tools & Study) */}
-        <section className="workbench-tools-deck">
-          {/* Data Input Panel (for array algorithms) */}
-          {showArrayInput && (
-            <DataInput
-              initialArray={array}
-              initialTarget={target}
-              disabled={isPlaying}
-              showTarget={metadata.category === 'searching' || selectedAlgoId === 'two-pointers'}
-              requireSorted={selectedAlgoId === 'binary-search'}
-              onUpdateData={handleUpdateData}
-              onSortArray={handleSortArray}
-            />
-          )}
-
-          {/* Source Code Viewer (C and TypeScript) */}
-          <CodeViewer
-            sourceCode={metadata.sourceCode}
-            highlightLine={currentStep?.codeLine}
-          />
-
-          {/* Intelligent Laboratory Tutor Assistant Console */}
-          <AITutorPanel
-            metadata={metadata}
-            currentStep={currentStep}
-            currentStepIndex={currentStepIndex}
-            totalSteps={totalSteps}
-            inputArray={array}
-            inputTarget={target}
-            lastChallengeResult={lastChallengeResult}
-          />
-
-          {/* Concept Reference: When, Why & Limitations */}
-          <AlgorithmInfoGuide metadata={metadata} />
-
-          {/* Conceptual Comparison: Linear Search vs Binary Search */}
-          {metadata.category === 'searching' && <SearchingComparison />}
-        </section>
+        {/* Deep Interactive Laboratory Study Desk */}
+        <WorkbenchDesk
+          metadata={metadata}
+          currentStep={currentStep}
+          currentStepIndex={currentStepIndex}
+          totalSteps={totalSteps}
+          sourceCode={metadata.sourceCode}
+          highlightLine={currentStep?.codeLine}
+          inputArray={array}
+          inputTarget={target}
+          lastChallengeResult={lastChallengeResult}
+          showArrayInput={showArrayInput}
+          isPlaying={isPlaying}
+          requireSorted={selectedAlgoId === 'binary-search'}
+          showTarget={metadata.category === 'searching' || selectedAlgoId === 'two-pointers'}
+          onUpdateData={handleUpdateData}
+          onSortArray={handleSortArray}
+        />
       </main>
     </div>
   );

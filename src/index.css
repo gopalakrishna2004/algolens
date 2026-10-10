@@ -1,58 +1,60 @@
 :root {
-  /* Core Laboratory Surfaces (Section 3 Tokens) */
-  --bg-canvas: #090d16;
-  --bg-surface: #0e1422;
-  --bg-surface-elevated: #141d30;
-  --bg-surface-hover: #1c263d;
-  --bg-active: rgba(103, 214, 232, 0.12);
+  /* Typography Families */
+  --font-display: 'Space Grotesk', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-mono: 'JetBrains Mono', 'Fira Code', 'SF Mono', Menlo, Consolas, monospace;
 
-  /* Precise Technical Borders */
-  --border-subtle: rgba(255, 255, 255, 0.07);
-  --border-medium: #273246;
-  --border-accent: rgba(103, 214, 232, 0.45);
-  --border-elevated: #334155;
+  /* Ink & Deep Charcoal Foundations (Refined Technical Laboratory) */
+  --bg-canvas: #07090e;
+  --bg-surface: #0c1018;
+  --bg-surface-elevated: #121824;
+  --bg-surface-hover: #192132;
+  --bg-active: rgba(92, 225, 230, 0.12);
 
-  /* Typography Hierarchy */
+  /* Precise Architectural Borders */
+  --border-subtle: rgba(255, 255, 255, 0.06);
+  --border-medium: #1f2738;
+  --border-strong: #2a354c;
+  --border-accent: rgba(92, 225, 230, 0.45);
+  --border-elevated: #313e59;
+
+  /* High-Contrast Typography Hierarchy */
   --text-primary: #f8fafc;
   --text-secondary: #94a3b8;
   --text-muted: #64748b;
   --text-faint: #475569;
 
-  /* Semantic Action Palette */
-  --accent-cyan: #67d6e8;          /* Pointers, active index, primary navigation */
-  --accent-amber: #f5b544;         /* Comparisons, key evaluations */
+  /* Restrained Semantic Action Palette */
+  --accent-cyan: #5ce1e6;          /* Pointers, active index, primary navigation */
+  --accent-amber: #f5b544;         /* Active comparisons, evaluating invariants */
   --accent-coral: #ff786f;         /* Swaps, mutations, element displacements */
-  --accent-emerald: #42d6a0;       /* Successful matches, sorted elements, targets */
-  --accent-slate: #64748b;         /* Muted, out-of-range, or discarded elements */
+  --accent-emerald: #3dd99e;       /* Successful matches, sorted elements, targets */
+  --accent-slate: #62728c;         /* Discarded, out-of-range, inactive */
   --accent-violet: #818cf8;        /* Auxiliary markers, tree/graph frontiers */
 
   /* Backwards compatibility aliases */
   --accent-primary: var(--accent-cyan);
   --accent-primary-hover: #38bdf8;
-  --accent-glow: rgba(103, 214, 232, 0.25);
+  --accent-glow: rgba(92, 225, 230, 0.22);
   --accent-secondary: var(--accent-violet);
   --accent-rose: #f43f5e;
 
   /* Radii */
-  --radius-xs: 3px;
+  --radius-xs: 4px;
   --radius-sm: 6px;
-  --radius-md: 8px;
-  --radius-lg: 12px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
   --radius-pill: 9999px;
 
-  /* Subtle Laboratory Shadows */
-  --shadow-sm: 0 2px 6px rgba(0, 0, 0, 0.35);
-  --shadow-md: 0 6px 16px rgba(0, 0, 0, 0.45);
-  --shadow-lg: 0 12px 28px rgba(0, 0, 0, 0.55);
-  --shadow-glow: 0 0 20px var(--accent-glow);
+  /* Tactile Precision Shadows */
+  --shadow-sm: 0 2px 6px rgba(0, 0, 0, 0.4);
+  --shadow-md: 0 8px 20px rgba(0, 0, 0, 0.5);
+  --shadow-lg: 0 16px 36px rgba(0, 0, 0, 0.65);
+  --shadow-glow: 0 0 24px var(--accent-glow);
 
-  /* Typography Stacks */
-  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  --font-mono: 'JetBrains Mono', 'Fira Code', 'SF Mono', Menlo, Consolas, monospace;
-
-  /* Transitions */
-  --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
-  --transition-normal: 220ms cubic-bezier(0.4, 0, 0.2, 1);
+  /* Motion Timing */
+  --transition-fast: 140ms cubic-bezier(0.16, 1, 0.3, 1);
+  --transition-normal: 220ms cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 * {
@@ -70,10 +72,12 @@ body {
   -moz-osx-font-smoothing: grayscale;
   line-height: 1.5;
   overflow-x: hidden;
+  /* Subdued Architectural Grid Background */
   background-image:
-    radial-gradient(ellipse 90% 60% at 50% -10%, rgba(103, 214, 232, 0.05), transparent 70%),
-    radial-gradient(rgba(255, 255, 255, 0.025) 1px, transparent 1px);
-  background-size: 100% 100%, 24px 24px;
+    linear-gradient(to right, rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+    radial-gradient(ellipse 80% 50% at 50% -10%, rgba(92, 225, 230, 0.05), transparent 70%);
+  background-size: 32px 32px, 32px 32px, 100% 100%;
 }
 
 #root {

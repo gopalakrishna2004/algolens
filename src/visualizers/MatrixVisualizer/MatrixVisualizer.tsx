@@ -1,5 +1,6 @@
 import React from 'react';
 import type { MatrixStep } from '../../algorithms/types';
+import './MatrixVisualizer.css';
 
 interface MatrixVisualizerProps {
   step: MatrixStep;
@@ -13,121 +14,33 @@ export const MatrixVisualizer: React.FC<MatrixVisualizerProps> = ({ step }) => {
   };
 
   return (
-    <div
-      style={{
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        padding: '24px 16px',
-        width: '100%',
-        minHeight: '380px',
-      }}
-    >
+    <div className="matrix-stage">
       {/* Top Banner: Action */}
-      <div
-        style={{
-          display: 'flex',
-          gap: '12px',
-          marginBottom: '24px',
-          alignItems: 'center',
-        }}
-      >
-        <div
-          style={{
-            padding: '5px 14px',
-            borderRadius: '6px',
-            background: 'rgba(168, 85, 247, 0.08)',
-            border: '1px solid rgba(168, 85, 247, 0.25)',
-            color: '#c084fc',
-            fontSize: '0.8rem',
-            fontWeight: 600,
-            fontFamily: 'var(--font-mono, monospace)',
-            letterSpacing: '0.06em',
-          }}
-        >
-          OP // {action ? action.toUpperCase() : 'STEP'}
+      <div className="matrix-telemetry-strip">
+        <div className="matrix-op-tag">
+          OP // {action ? action.toUpperCase() : 'GRID STEP'}
         </div>
       </div>
 
-      <div
-        style={{
-          display: 'flex',
-          gap: '32px',
-          alignItems: 'flex-start',
-          justifyContent: 'center',
-          flexWrap: 'wrap',
-          width: '100%',
-        }}
-      >
+      <div className="matrix-workspace-grid">
         {/* Call Stack Section (for Recursion & Backtracking) */}
         {currentCallStack && currentCallStack.length > 0 && (
-          <div
-            style={{
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
-              minWidth: '220px',
-            }}
-          >
-            <span
-              style={{
-                fontSize: '0.8rem',
-                color: '#38bdf8',
-                fontWeight: 700,
-                marginBottom: '8px',
-                textTransform: 'uppercase',
-                letterSpacing: '0.05em',
-              }}
-            >
-              Call Stack (Depth: {currentCallStack.length})
-            </span>
-            <div
-              style={{
-                display: 'flex',
-                flexDirection: 'column-reverse',
-                gap: '6px',
-                width: '100%',
-                padding: '12px',
-                borderRadius: '8px',
-                border: '2px solid #334155',
-                background: 'rgba(15, 23, 42, 0.7)',
-                minHeight: '180px',
-              }}
-            >
+          <div className="call-stack-column">
+            <div className="call-stack-header">
+              <span>CALL STACK</span>
+              <span>// DEPTH {currentCallStack.length}</span>
+            </div>
+            <div className="call-stack-chamber">
               {currentCallStack.map((frame, idx) => {
                 const isTop = idx === currentCallStack.length - 1;
                 return (
                   <div
                     key={idx}
-                    style={{
-                      padding: '8px 12px',
-                      borderRadius: '6px',
-                      background: isTop
-                        ? 'linear-gradient(135deg, #0284c7, #0369a1)'
-                        : '#1e293b',
-                      border: isTop ? '1.5px solid #38bdf8' : '1px solid #475569',
-                      color: '#ffffff',
-                      fontSize: '0.85rem',
-                      fontWeight: 600,
-                      fontFamily: 'monospace',
-                      boxShadow: isTop ? '0 0 10px rgba(56, 189, 248, 0.4)' : undefined,
-                      display: 'flex',
-                      justifyContent: 'space-between',
-                      alignItems: 'center',
-                    }}
+                    className={`call-stack-frame ${isTop ? 'is-top' : ''}`}
                   >
                     <span>{frame}</span>
                     {isTop && (
-                      <span
-                        style={{
-                          fontSize: '0.65rem',
-                          background: '#38bdf8',
-                          color: '#0f172a',
-                          padding: '1px 5px',
-                          borderRadius: '3px',
-                          fontWeight: 700,
-                        }}
-                      >
+                      <span className="call-stack-top-badge">
                         ACTIVE
                       </span>
                     )}
@@ -140,48 +53,19 @@ export const MatrixVisualizer: React.FC<MatrixVisualizerProps> = ({ step }) => {
 
         {/* 2D Matrix Table Section (for Dynamic Programming & Grids) */}
         {matrix && matrix.length > 0 && (
-          <div
-            style={{
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
-              overflowX: 'auto',
-            }}
-          >
-            <span
-              style={{
-                fontSize: '0.8rem',
-                color: '#4ade80',
-                fontWeight: 700,
-                marginBottom: '8px',
-                textTransform: 'uppercase',
-                letterSpacing: '0.05em',
-              }}
-            >
-              DP Memoization Table
-            </span>
-            <table
-              style={{
-                borderCollapse: 'separate',
-                borderSpacing: '6px',
-              }}
-            >
+          <div className="dp-table-column">
+            <div className="dp-table-header">
+              <span>DP MEMOIZATION TABLE</span>
+              <span>// MATRIX [{matrix.length} × {matrix[0]?.length || 0}]</span>
+            </div>
+            <table className="dp-table-grid">
               {/* Column Headers */}
               {colLabels && (
                 <thead>
                   <tr>
                     {rowLabels && <th style={{ width: '40px' }} />}
                     {colLabels.map((col, idx) => (
-                      <th
-                        key={idx}
-                        style={{
-                          color: '#94a3b8',
-                          fontSize: '0.75rem',
-                          fontWeight: 600,
-                          padding: '4px',
-                          textAlign: 'center',
-                        }}
-                      >
+                      <th key={idx} className="dp-col-label">
                         {col}
                       </th>
                     ))}
@@ -194,16 +78,7 @@ export const MatrixVisualizer: React.FC<MatrixVisualizerProps> = ({ step }) => {
                   <tr key={rIdx}>
                     {/* Row Label */}
                     {rowLabels && (
-                      <td
-                        style={{
-                          color: '#94a3b8',
-                          fontSize: '0.75rem',
-                          fontWeight: 600,
-                          padding: '4px',
-                          textAlign: 'right',
-                          paddingRight: '8px',
-                        }}
-                      >
+                      <td className="dp-row-label">
                         {rowLabels[rIdx]}
                       </td>
                     )}
@@ -211,39 +86,18 @@ export const MatrixVisualizer: React.FC<MatrixVisualizerProps> = ({ step }) => {
                     {/* Row Cells */}
                     {row.map((val, cIdx) => {
                       const highlight = isCellHighlighted(rIdx, cIdx);
-                      let bg = '#1e293b';
-                      let border = '#334155';
-                      let color = '#f8fafc';
+                      let cellClass = 'dp-cell';
 
                       if (highlight?.state === 'writing') {
-                        bg = 'linear-gradient(135deg, #15803d, #22c55e)';
-                        border = '#4ade80';
+                        cellClass += ' is-writing';
                       } else if (highlight?.state === 'reading') {
-                        bg = 'linear-gradient(135deg, #0369a1, #0ea5e9)';
-                        border = '#38bdf8';
+                        cellClass += ' is-reading';
                       } else if (highlight?.state === 'highlighted') {
-                        bg = 'linear-gradient(135deg, #b45309, #f59e0b)';
-                        border = '#fbbf24';
+                        cellClass += ' is-highlighted';
                       }
 
                       return (
-                        <td
-                          key={cIdx}
-                          style={{
-                            minWidth: '42px',
-                            height: '42px',
-                            borderRadius: '6px',
-                            background: bg,
-                            border: `1.5px solid ${border}`,
-                            color,
-                            fontWeight: 700,
-                            fontSize: '0.9rem',
-                            textAlign: 'center',
-                            fontFamily: 'monospace',
-                            boxShadow: highlight ? '0 0 10px rgba(0,0,0,0.4)' : undefined,
-                            transition: 'all 0.2s ease',
-                          }}
-                        >
+                        <td key={cIdx} className={cellClass}>
                           {val}
                         </td>
                       );

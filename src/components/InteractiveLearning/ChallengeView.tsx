@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import type { ChallengeQuestion } from '../../learning/types';
 import './ChallengeView.css';
 
@@ -25,12 +25,6 @@ export const ChallengeView: React.FC<ChallengeViewProps> = ({
   const [hasSubmitted, setHasSubmitted] = useState(false);
   const [revealed, setRevealed] = useState(false);
 
-  // Reset local answer state when challenge changes
-  useEffect(() => {
-    setSelectedOptionId(null);
-    setHasSubmitted(false);
-    setRevealed(false);
-  }, [challenge?.id]);
 
   if (!challenge) {
     return (

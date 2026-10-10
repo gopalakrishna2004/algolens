@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import type { ElementState, StepPointers } from '../../algorithms/types';
 import './ArrayVisualizer.css';
 
@@ -18,9 +18,19 @@ export const ArrayVisualizer: React.FC<ArrayVisualizerProps> = ({
   const hasRangePointers =
     pointers?.left !== undefined && pointers?.right !== undefined;
 
+  const maxVal = useMemo(() => {
+    return array.length > 0 ? Math.max(...array, 1) : 1;
+  }, [array]);
+
   return (
     <section className="array-stage" aria-label="Array Visualization Canvas">
-      {/* Array Elements Workspace */}
+      {/* Precision Stage Corner Registration Marks */}
+      <span className="stage-crosshair ch-tl" aria-hidden="true">+</span>
+      <span className="stage-crosshair ch-tr" aria-hidden="true">+</span>
+      <span className="stage-crosshair ch-bl" aria-hidden="true">+</span>
+      <span className="stage-crosshair ch-br" aria-hidden="true">+</span>
+
+      {/* Array Elements Workspace Track */}
       <div className="array-track" role="list">
         {array.map((value, idx) => {
           const state = elementStates[idx] || 'default';
@@ -69,6 +79,9 @@ export const ArrayVisualizer: React.FC<ArrayVisualizerProps> = ({
             idx <= (pointers?.right ?? -1) &&
             state !== 'discarded';
 
+          // Magnitude percentage for visual amplitude bar
+          const magnitudePercent = Math.max(14, Math.min(100, Math.round((value / maxVal) * 100)));
+
           return (
             <div key={idx} className="array-column" role="listitem">
               {/* Physical Pointer Dock */}
@@ -90,6 +103,14 @@ export const ArrayVisualizer: React.FC<ArrayVisualizerProps> = ({
                 }`}
                 title={`Index [${idx}]: Value ${value} (State: ${state})`}
               >
+                {/* Background Magnitude Gauge Bar */}
+                <div
+                  className="element-magnitude-fill"
+                  style={{ height: `${magnitudePercent}%` }}
+                  aria-hidden="true"
+                />
+
+                {/* Prominent High-Contrast Value */}
                 <span className="element-value">{value}</span>
               </div>
 
