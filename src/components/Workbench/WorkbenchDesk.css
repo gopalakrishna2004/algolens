@@ -1,0 +1,85 @@
+.workbench-desk {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+  margin-top: 10px;
+}
+
+.desk-tab-strip {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-medium);
+  border-radius: var(--radius-sm);
+  padding: 4px;
+  overflow-x: auto;
+  user-select: none;
+}
+
+.desk-tab-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 14px;
+  border-radius: var(--radius-xs);
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  font-size: 0.76rem;
+  font-weight: 700;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all var(--transition-fast);
+}
+
+.desk-tab-btn:hover {
+  color: var(--text-primary);
+  background: var(--bg-surface-elevated);
+}
+
+.desk-tab-btn.is-active {
+  background: var(--bg-surface-elevated);
+  border-color: var(--border-medium);
+  color: var(--accent-cyan);
+  box-shadow: var(--shadow-sm);
+}
+
+.desk-tab-icon {
+  font-size: 0.82rem;
+}
+
+.desk-tab-badge {
+  font-size: 0.65rem;
+  font-weight: 800;
+  padding: 1px 5px;
+  border-radius: var(--radius-pill);
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--text-secondary);
+  border: 1px solid var(--border-subtle);
+}
+
+.desk-tab-badge.badge-cyan {
+  background: rgba(92, 225, 230, 0.1);
+  color: var(--accent-cyan);
+  border-color: rgba(92, 225, 230, 0.25);
+}
+
+.desk-content-panel {
+  display: flex;
+  flex-direction: column;
+  animation: deskFadeIn 0.15s ease-out;
+}
+
+@keyframes deskFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(3px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

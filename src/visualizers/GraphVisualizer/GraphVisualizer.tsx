@@ -1,5 +1,6 @@
 import React from 'react';
 import type { GraphStep } from '../../algorithms/types';
+import './GraphVisualizer.css';
 
 interface GraphVisualizerProps {
   step: GraphStep;
@@ -12,70 +13,19 @@ export const GraphVisualizer: React.FC<GraphVisualizerProps> = ({ step }) => {
   const nodeMap = new Map(nodes.map((n) => [n.id, n]));
 
   return (
-    <div
-      style={{
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        padding: '24px 16px',
-        width: '100%',
-        minHeight: '400px',
-      }}
-    >
+    <div className="graph-stage">
       {/* Top Banner: Action & Auxiliary Structures */}
-      <div
-        style={{
-          display: 'flex',
-          gap: '16px',
-          marginBottom: '20px',
-          alignItems: 'center',
-          flexWrap: 'wrap',
-          justifyContent: 'center',
-        }}
-      >
-        <div
-          style={{
-            padding: '5px 14px',
-            borderRadius: '6px',
-            background: 'rgba(236, 72, 153, 0.08)',
-            border: '1px solid rgba(236, 72, 153, 0.25)',
-            color: '#f472b6',
-            fontSize: '0.8rem',
-            fontWeight: 600,
-            fontFamily: 'var(--font-mono, monospace)',
-            letterSpacing: '0.06em',
-          }}
-        >
-          OP // {action ? action.toUpperCase() : 'STEP'}
+      <div className="graph-telemetry-strip">
+        <div className="graph-op-tag">
+          OP // {action ? action.toUpperCase() : 'GRAPH STEP'}
         </div>
 
         {queueOrStack && queueOrStack.length > 0 && (
-          <div
-            style={{
-              padding: '6px 14px',
-              borderRadius: '8px',
-              background: '#1e293b',
-              border: '1px solid #334155',
-              fontSize: '0.85rem',
-              color: '#94a3b8',
-              display: 'flex',
-              gap: '6px',
-              alignItems: 'center',
-            }}
-          >
-            <span>Active Collection:</span>
+          <div className="graph-aux-collection">
+            <span>FRONTIER //</span>
             <div style={{ display: 'flex', gap: '4px' }}>
               {queueOrStack.map((item, idx) => (
-                <span
-                  key={idx}
-                  style={{
-                    background: '#0284c7',
-                    color: '#fff',
-                    padding: '1px 6px',
-                    borderRadius: '4px',
-                    fontWeight: 700,
-                  }}
-                >
+                <span key={idx} className="graph-aux-pill">
                   {item}
                 </span>
               ))}
@@ -84,63 +34,57 @@ export const GraphVisualizer: React.FC<GraphVisualizerProps> = ({ step }) => {
         )}
 
         {visitedNodes.length > 0 && (
-          <div
-            style={{
-              padding: '6px 14px',
-              borderRadius: '8px',
-              background: '#1e293b',
-              border: '1px solid #334155',
-              fontSize: '0.85rem',
-              color: '#94a3b8',
-              display: 'flex',
-              gap: '6px',
-              alignItems: 'center',
-            }}
-          >
-            <span>Visited:</span>
-            <span style={{ color: '#4ade80', fontWeight: 700 }}>
-              [{visitedNodes.join(', ')}]
-            </span>
+          <div className="graph-visited-summary">
+            <span>VISITED //</span>
+            <strong>[{visitedNodes.join(', ')}]</strong>
           </div>
         )}
       </div>
 
-      {/* SVG Graph View */}
-      <div
-        style={{
-          width: '100%',
-          maxWidth: '680px',
-          height: '320px',
-          position: 'relative',
-          background: 'rgba(15, 23, 42, 0.6)',
-          borderRadius: '12px',
-          border: '1px solid #334155',
-          boxShadow: 'inset 0 0 20px rgba(0,0,0,0.5)',
-          overflow: 'hidden',
-        }}
-      >
+      {/* Wide SVG Graph Viewport */}
+      <div className="graph-viewport-frame">
         <svg
-          viewBox="0 0 650 300"
-          style={{ width: '100%', height: '100%', overflow: 'visible' }}
+          viewBox="0 0 650 320"
+          className="graph-svg-canvas"
         >
+          <defs>
+            {/* Subtle laboratory grid pattern */}
+            <pattern id="graph-lab-grid" width="30" height="30" patternUnits="userSpaceOnUse">
+              <circle cx="15" cy="15" r="0.8" fill="rgba(255, 255, 255, 0.12)" />
+            </pattern>
+            {/* Glow filter for active/mst edges */}
+            <filter id="edge-glow" x="-20%" y="-20%" width="140%" height="140%">
+              <feGaussianBlur stdDeviation="3" result="blur" />
+              <feComposite in="SourceGraphic" in2="blur" operator="over" />
+            </filter>
+          </defs>
+
+          {/* Grid background */}
+          <rect width="650" height="320" fill="url(#graph-lab-grid)" />
+
           {/* Edges */}
           {edges.map((e, idx) => {
             const u = nodeMap.get(e.from);
             const v = nodeMap.get(e.to);
             if (!u || !v || u.x === undefined || u.y === undefined || v.x === undefined || v.y === undefined) return null;
 
-            let stroke = '#475569';
-            let strokeWidth = 2;
+            let stroke = '#27344c';
+            let strokeWidth = 2.5;
+            let strokeDasharray = undefined;
+            let filter = undefined;
 
             if (e.state === 'included') {
-              stroke = '#22c55e';
-              strokeWidth = 4;
+              stroke = '#3dd99e';
+              strokeWidth = 3.5;
+              filter = 'url(#edge-glow)';
             } else if (e.state === 'considering') {
-              stroke = '#f59e0b';
+              stroke = '#f5b544';
               strokeWidth = 3;
+              filter = 'url(#edge-glow)';
             } else if (e.state === 'discarded') {
-              stroke = '#ef4444';
+              stroke = '#334155';
               strokeWidth = 1.5;
+              strokeDasharray = '4 4';
             }
 
             const midX = (u.x + v.x) / 2;
@@ -155,26 +99,29 @@ export const GraphVisualizer: React.FC<GraphVisualizerProps> = ({ step }) => {
                   y2={v.y}
                   stroke={stroke}
                   strokeWidth={strokeWidth}
+                  strokeDasharray={strokeDasharray}
                   strokeLinecap="round"
+                  filter={filter}
                 />
                 {e.weight !== undefined && (
                   <g>
                     <rect
-                      x={midX - 10}
-                      y={midY - 9}
-                      width={20}
-                      height={18}
-                      rx={4}
-                      fill="#0f172a"
-                      stroke="#334155"
-                      strokeWidth={1}
+                      x={midX - 12}
+                      y={midY - 10}
+                      width={24}
+                      height={20}
+                      rx={5}
+                      fill="#0c1018"
+                      stroke={e.state === 'included' ? '#3dd99e' : '#27344c'}
+                      strokeWidth={1.5}
                     />
                     <text
                       x={midX}
                       y={midY + 4}
-                      fill="#94a3b8"
+                      fill={e.state === 'included' ? '#3dd99e' : '#94a3b8'}
                       fontSize="11"
-                      fontWeight="bold"
+                      fontWeight="700"
+                      fontFamily="var(--font-mono, monospace)"
                       textAnchor="middle"
                     >
                       {e.weight}
@@ -193,67 +140,90 @@ export const GraphVisualizer: React.FC<GraphVisualizerProps> = ({ step }) => {
             const isVisiting = n.state === 'visiting';
             const isVisited = n.state === 'visited';
 
-            let fill = '#1e293b';
-            let stroke = '#64748b';
+            let fill = '#121824';
+            let stroke = '#27344c';
             let strokeWidth = 2;
+            let textFill = '#f0f4fc';
 
             if (isCurrent) {
-              fill = '#0284c7';
-              stroke = '#38bdf8';
+              fill = '#0a2540';
+              stroke = '#5ce1e6';
               strokeWidth = 3;
+              textFill = '#ffffff';
             } else if (isVisiting) {
-              fill = '#d97706';
-              stroke = '#fbbf24';
-              strokeWidth = 3;
-            } else if (isVisited) {
-              fill = '#15803d';
-              stroke = '#4ade80';
+              fill = '#382510';
+              stroke = '#f5b544';
               strokeWidth = 2.5;
+              textFill = '#ffffff';
+            } else if (isVisited) {
+              fill = '#0d2818';
+              stroke = '#3dd99e';
+              strokeWidth = 2.5;
+              textFill = '#ffffff';
             }
 
             return (
               <g key={n.id}>
+                {/* Active radar halo ring */}
                 {isCurrent && (
                   <circle
                     cx={n.x}
                     cy={n.y}
-                    r={26}
+                    r={28}
                     fill="none"
-                    stroke="#38bdf8"
-                    strokeWidth={2}
-                    opacity={0.6}
+                    stroke="#5ce1e6"
+                    strokeWidth={1.5}
+                    strokeDasharray="3 3"
+                    opacity={0.7}
                   />
                 )}
+                {/* Node main beacon */}
                 <circle
                   cx={n.x}
                   cy={n.y}
-                  r={20}
+                  r={21}
                   fill={fill}
                   stroke={stroke}
                   strokeWidth={strokeWidth}
-                  style={{ transition: 'all 0.25s ease' }}
+                  style={{ transition: 'all 0.22s ease' }}
                 />
+                {/* Node ID label */}
                 <text
                   x={n.x}
                   y={n.y + 5}
-                  fill="#ffffff"
-                  fontSize="14"
-                  fontWeight="bold"
+                  fill={textFill}
+                  fontSize="13"
+                  fontWeight="700"
+                  fontFamily="var(--font-mono, monospace)"
                   textAnchor="middle"
                 >
                   {n.label}
                 </text>
+                {/* Distance tag if applicable */}
                 {n.distance !== undefined && (
-                  <text
-                    x={n.x}
-                    y={n.y - 25}
-                    fill="#38bdf8"
-                    fontSize="11"
-                    fontWeight="bold"
-                    textAnchor="middle"
-                  >
-                    dist: {n.distance === Infinity ? '∞' : n.distance}
-                  </text>
+                  <g>
+                    <rect
+                      x={n.x - 22}
+                      y={n.y - 34}
+                      width={44}
+                      height={15}
+                      rx={3}
+                      fill="#0c1018"
+                      stroke="#5ce1e6"
+                      strokeWidth={1}
+                    />
+                    <text
+                      x={n.x}
+                      y={n.y - 23}
+                      fill="#5ce1e6"
+                      fontSize="9"
+                      fontWeight="700"
+                      fontFamily="var(--font-mono, monospace)"
+                      textAnchor="middle"
+                    >
+                      {n.distance === Infinity ? 'd: ∞' : `d: ${n.distance}`}
+                    </text>
+                  </g>
                 )}
               </g>
             );
@@ -263,8 +233,9 @@ export const GraphVisualizer: React.FC<GraphVisualizerProps> = ({ step }) => {
 
       {/* Live Distance or MST Summary */}
       {stats && stats.totalWeight !== undefined && (
-        <div style={{ marginTop: '16px', color: '#4ade80', fontSize: '0.9rem', fontWeight: 600 }}>
-          Total MST Weight: {stats.totalWeight}
+        <div className="graph-stat-footer">
+          <span>MST TOTAL WEIGHT //</span>
+          <strong>{stats.totalWeight}</strong>
         </div>
       )}
     </div>

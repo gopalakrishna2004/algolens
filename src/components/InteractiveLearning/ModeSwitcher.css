@@ -1,0 +1,88 @@
+.lab-mode-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 8px 14px;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-medium);
+  border-radius: var(--radius-sm);
+  flex-wrap: wrap;
+}
+
+.mode-toggle-group {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--bg-canvas);
+  padding: 3px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-subtle);
+}
+
+.mode-tab-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 12px;
+  border-radius: var(--radius-xs);
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  font-size: 0.74rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.mode-tab-btn:hover {
+  color: var(--text-primary);
+}
+
+.mode-tab-btn.active {
+  background: var(--bg-surface-elevated);
+  border-color: var(--border-medium);
+  color: var(--accent-cyan);
+  box-shadow: var(--shadow-sm);
+}
+
+.mode-icon {
+  font-size: 0.82rem;
+}
+
+.mode-telemetry-summary {
+  display: flex;
+  align-items: center;
+}
+
+.mode-hint-text {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+}
+
+.challenge-score-summary {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-mono);
+  font-size: 0.74rem;
+}
+
+.score-label {
+  color: var(--text-muted);
+  font-weight: 700;
+}
+
+.score-value {
+  color: var(--accent-emerald);
+  font-weight: 700;
+}
+
+.score-streak {
+  color: #ffedd5;
+  background: rgba(255, 120, 111, 0.2);
+  border: 1px solid rgba(255, 120, 111, 0.4);
+  padding: 1px 6px;
+  border-radius: var(--radius-pill);
+}

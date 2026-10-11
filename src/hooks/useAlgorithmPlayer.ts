@@ -95,6 +95,13 @@ export function useAlgorithmPlayer<TStep extends BaseStep>({
     setCurrentStepIndex((prev) => Math.max(prev - 1, 0));
   }, [clearTimer]);
 
+  const jumpToStep = useCallback((index: number) => {
+    clearTimer();
+    setIsPlaying(false);
+    const clamped = Math.max(0, Math.min(index, steps.length - 1));
+    setCurrentStepIndex(clamped);
+  }, [clearTimer, steps.length]);
+
   const currentStep: TStep | null = steps[currentStepIndex] || null;
 
   return {
@@ -108,6 +115,7 @@ export function useAlgorithmPlayer<TStep extends BaseStep>({
     reset,
     stepForward,
     stepBackward,
+    jumpToStep,
     setSpeed: setSpeedMs,
   };
 }

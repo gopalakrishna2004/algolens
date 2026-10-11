@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import type { ElementState, StepPointers } from '../../algorithms/types';
 import './ArrayVisualizer.css';
 
@@ -18,10 +18,20 @@ export const ArrayVisualizer: React.FC<ArrayVisualizerProps> = ({
   const hasRangePointers =
     pointers?.left !== undefined && pointers?.right !== undefined;
 
+  const maxVal = useMemo(() => {
+    return array.length > 0 ? Math.max(...array, 1) : 1;
+  }, [array]);
+
   return (
-    <section className="array-stage">
-      {/* Array Elements Workspace */}
-      <div className="array-track">
+    <section className="array-stage" aria-label="Array Visualization Canvas">
+      {/* Precision Stage Corner Registration Marks */}
+      <span className="stage-crosshair ch-tl" aria-hidden="true">+</span>
+      <span className="stage-crosshair ch-tr" aria-hidden="true">+</span>
+      <span className="stage-crosshair ch-bl" aria-hidden="true">+</span>
+      <span className="stage-crosshair ch-br" aria-hidden="true">+</span>
+
+      {/* Array Elements Workspace Track */}
+      <div className="array-track" role="list">
         {array.map((value, idx) => {
           const state = elementStates[idx] || 'default';
 
@@ -41,6 +51,16 @@ export const ArrayVisualizer: React.FC<ArrayVisualizerProps> = ({
             labels.push('RIGHT');
             primaryType = primaryType === 'current' ? 'right' : primaryType;
           }
+          if (pointers) {
+            for (const [key, val] of Object.entries(pointers)) {
+              if (
+                val === idx &&
+                !['left', 'mid', 'right', 'current'].includes(key)
+              ) {
+                labels.push(key.toUpperCase());
+              }
+            }
+          }
           if (
             labels.length === 0 &&
             ((pointers?.current === idx && pointers?.mid === undefined) ||
@@ -59,17 +79,20 @@ export const ArrayVisualizer: React.FC<ArrayVisualizerProps> = ({
             idx <= (pointers?.right ?? -1) &&
             state !== 'discarded';
 
+          // Magnitude percentage for visual amplitude bar
+          const magnitudePercent = Math.max(14, Math.min(100, Math.round((value / maxVal) * 100)));
+
           return (
-            <div key={idx} className="array-column">
+            <div key={idx} className="array-column" role="listitem">
               {/* Physical Pointer Dock */}
               <div className="pointer-dock">
                 {hasPointer ? (
                   <div className={`physical-pointer pointer-${primaryType}`}>
                     <span className="pointer-name">{labels.join(' · ')}</span>
-                    <span className="pointer-stem-arrow">↓</span>
+                    <span className="pointer-stem-arrow" aria-hidden="true">↓</span>
                   </div>
                 ) : (
-                  <div className="pointer-placeholder" />
+                  <div className="pointer-placeholder" aria-hidden="true" />
                 )}
               </div>
 
@@ -78,7 +101,16 @@ export const ArrayVisualizer: React.FC<ArrayVisualizerProps> = ({
                 className={`array-element state-${state} ${
                   isInActiveRange ? 'is-active-range' : ''
                 }`}
+                title={`Index [${idx}]: Value ${value} (State: ${state})`}
               >
+                {/* Background Magnitude Gauge Bar */}
+                <div
+                  className="element-magnitude-fill"
+                  style={{ height: `${magnitudePercent}%` }}
+                  aria-hidden="true"
+                />
+
+                {/* Prominent High-Contrast Value */}
                 <span className="element-value">{value}</span>
               </div>
 
@@ -94,29 +126,29 @@ export const ArrayVisualizer: React.FC<ArrayVisualizerProps> = ({
       {/* Modern Streamlined State Legend */}
       <footer className="array-legend">
         <div className="legend-chip">
-          <span className="legend-pip pip-default" />
-          <span>Unvisited</span>
+          <span className="legend-pip pip-default" aria-hidden="true" />
+          <span>Default</span>
         </div>
         {hasRangePointers && (
           <div className="legend-chip">
-            <span className="legend-pip pip-active-range" />
+            <span className="legend-pip pip-active-range" aria-hidden="true" />
             <span>Active Range [L..R]</span>
           </div>
         )}
         <div className="legend-chip">
-          <span className="legend-pip pip-comparing" />
-          <span>Inspecting</span>
+          <span className="legend-pip pip-comparing" aria-hidden="true" />
+          <span>Evaluating</span>
         </div>
         <div className="legend-chip">
-          <span className="legend-pip pip-found" />
+          <span className="legend-pip pip-found" aria-hidden="true" />
           <span>Found / Target</span>
         </div>
         <div className="legend-chip">
-          <span className="legend-pip pip-sorted" />
+          <span className="legend-pip pip-sorted" aria-hidden="true" />
           <span>Sorted</span>
         </div>
         <div className="legend-chip">
-          <span className="legend-pip pip-discarded" />
+          <span className="legend-pip pip-discarded" aria-hidden="true" />
           <span>Discarded</span>
         </div>
       </footer>

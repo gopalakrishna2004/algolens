@@ -1,4 +1,5 @@
 import React from 'react';
+import type { LearningMode } from '../../learning/types';
 import './Explanation.css';
 
 interface ExplanationProps {
@@ -6,19 +7,21 @@ interface ExplanationProps {
   description: string;
   currentStepIndex: number;
   totalSteps: number;
+  mode?: LearningMode;
 }
 
 export const Explanation: React.FC<ExplanationProps> = ({
   description,
   currentStepIndex,
   totalSteps,
+  mode = 'explore',
 }) => {
   const currentStepNum = totalSteps > 0 ? String(currentStepIndex + 1).padStart(2, '0') : '00';
   const totalStepsNum = totalSteps > 0 ? String(totalSteps).padStart(2, '0') : '00';
   const progressPercent = totalSteps > 0 ? ((currentStepIndex + 1) / totalSteps) * 100 : 0;
 
   return (
-    <div className="teaching-hud">
+    <div className={`teaching-hud ${mode === 'guided' ? 'is-guided-mode' : ''}`} role="status" aria-live="polite">
       {/* Top Meta Line with Step Tracking & Progress */}
       <div className="teaching-hud-meta">
         <div className="step-tracker-label">
@@ -26,6 +29,11 @@ export const Explanation: React.FC<ExplanationProps> = ({
           <span className="step-numbers">
             {currentStepNum} <span className="step-slash">/</span> {totalStepsNum}
           </span>
+          {mode === 'guided' && (
+            <span className="guided-checkpoint-tag">
+              🧭 INVARIANT CHECKPOINT
+            </span>
+          )}
         </div>
 
         {/* Subtle Horizontal Progress Line */}
