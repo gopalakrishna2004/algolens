@@ -9,13 +9,13 @@ interface LinkedListVisualizerProps {
 export const LinkedListVisualizer: React.FC<LinkedListVisualizerProps> = ({ step }) => {
   return (
     <div className="linked-list-stage">
-      {/* Lab Telemetry Action Tag */}
+      {/* Editorial Telemetry Strip */}
       <div className="ll-telemetry-strip">
         <div className="ll-op-tag">
-          OP // {step.action}
+          {step.action.charAt(0).toUpperCase() + step.action.slice(1)}
         </div>
         <div className="ll-stat-pill">
-          NODES // <strong>{step.nodes.length}</strong>
+          Nodes: <strong>{step.nodes.length}</strong>
         </div>
       </div>
 
@@ -24,7 +24,7 @@ export const LinkedListVisualizer: React.FC<LinkedListVisualizerProps> = ({ step
         {step.nodes.length === 0 ? (
           <div className="ll-empty-notice">
             <span>Empty List</span>
-            <code>HEAD ──▶ NULL</code>
+            <code>head → null</code>
           </div>
         ) : (
           step.nodes.map((node, index) => {
@@ -45,17 +45,17 @@ export const LinkedListVisualizer: React.FC<LinkedListVisualizerProps> = ({ step
                   <div className="ll-pointers-row">
                     {isHead && (
                       <span className="ll-pointer-badge head">
-                        ▼ HEAD
+                        Head
                       </span>
                     )}
                     {isCurrent && (
                       <span className="ll-pointer-badge curr">
-                        ▼ CURR
+                        Current
                       </span>
                     )}
                     {isPrev && (
                       <span className="ll-pointer-badge prev">
-                        ▼ PREV
+                        Previous
                       </span>
                     )}
                   </div>
@@ -90,8 +90,8 @@ export const LinkedListVisualizer: React.FC<LinkedListVisualizerProps> = ({ step
 
         {/* Tail Terminal NULL */}
         <div className="ll-null-terminal">
-          <span>NULL</span>
-          <span className="ll-null-subtext">0x00</span>
+          <span>null</span>
+          <span className="ll-null-subtext">tail</span>
         </div>
       </div>
     </div>

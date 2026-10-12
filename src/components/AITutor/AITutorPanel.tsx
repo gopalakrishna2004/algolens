@@ -10,6 +10,10 @@ interface AITutorPanelProps {
   inputArray?: number[];
   inputTarget?: number;
   lastChallengeResult?: { isCorrect: boolean; concept?: string } | null;
+  sourceCode?: {
+    c: string;
+    typescript: string;
+  };
 }
 
 export const AITutorPanel: React.FC<AITutorPanelProps> = ({
@@ -20,15 +24,18 @@ export const AITutorPanel: React.FC<AITutorPanelProps> = ({
   inputArray,
   inputTarget,
   lastChallengeResult,
+  sourceCode,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [query, setQuery] = useState('');
   const [answer, setAnswer] = useState<string | null>(null);
 
+  const activeCSource = sourceCode?.c || metadata.sourceCode?.c;
+
   // Extract the specific highlighted line from C source code if available
   const getCSourceLine = (lineNum?: number): string | null => {
-    if (!lineNum || !metadata.sourceCode?.c) return null;
-    const lines = metadata.sourceCode.c.split('\n');
+    if (!lineNum || !activeCSource) return null;
+    const lines = activeCSource.split('\n');
     const targetLine = lines[lineNum - 1];
     return targetLine ? targetLine.trim() : null;
   };
@@ -75,14 +82,78 @@ export const AITutorPanel: React.FC<AITutorPanelProps> = ({
         const lineNum = currentStep?.codeLine ?? 1;
         const codeSnippet = activeCLineText ?? 'Line execution pointer';
 
+        let lineExplanation = '';
+        if (metadata.id === 'linear-search') {
+          if (lineNum === 10) {
+            lineExplanation =
+              `• **Beginner Concept:** Declares and sets the \`target\` integer variable. This is the exact value we are searching for in the array.\n` +
+              `• **Why here?** In C, variables are declared before or at the start of the search routine so the loop can compare against them.`;
+          } else if (lineNum === 14) {
+            lineExplanation =
+              `• **Beginner Concept:** A \`for\` loop starting at \`index = 0\`. In C, arrays use zero-based indexing—meaning the very first item is stored at \`numbers[0]\`.\n` +
+              `• **Loop Mechanics:** \`index++\` increases \`index\` by 1 after each round so the computer checks the next element sequentially until \`index < totalElements\` is false.`;
+          } else if (lineNum === 16) {
+            lineExplanation =
+              `• **Beginner Concept:** The equality comparison \`if (numbers[index] == target)\`.\n` +
+              `• **C Syntax Note:** In C, double equals \`==\` checks if two numbers are equal, while single equals \`=\` assigns a value. This condition determines if the search should succeed right now.`;
+          } else if (lineNum === 18) {
+            lineExplanation =
+              `• **Beginner Concept:** \`printf\` outputs formatted text. Notice \`index + 1\`: computers count indices starting at 0, but humans count positions starting from 1 (so index 0 is position 1).\n` +
+              `• **Next Step:** Line 19 executes \`return 0;\` to terminate early once the element is found.`;
+          } else if (lineNum === 24 || lineNum === 25) {
+            const lastIdxStr =
+              currentStep && 'array' in currentStep && Array.isArray((currentStep as { array?: unknown[] }).array)
+                ? String(((currentStep as { array: unknown[] }).array.length || 1) - 1)
+                : 'the end';
+            lineExplanation =
+              `• **Beginner Concept:** Reaching this line means the loop examined every element from index 0 to ${lastIdxStr} and found no match.\n` +
+              `• **C Exit Code vs Algorithm Return:** In our walkthrough, \`main()\` finishes with \`return 0;\` to indicate normal process completion to the operating system. In larger DSA projects, a reusable search function returns \`-1\` as a sentinel value for "not found".`;
+          } else {
+            lineExplanation =
+              `• **Beginner Concept:** Part of the beginner-friendly Linear Search program structure.\n` +
+              `• **Execution Flow:** Step-by-step sequential inspection from the first array element to the last.`;
+          }
+        } else if (metadata.id === 'binary-search') {
+          if (lineNum === 5) {
+            lineExplanation =
+              `• **Beginner Concept:** \`while (left <= right)\` defines the loop invariant while valid elements remain in search range.\n` +
+              `• **Search Invariant:** If left passes right (\`left > right\`), the target is proven not to exist in the array.`;
+          } else if (lineNum === 6 || lineNum === 7) {
+            lineExplanation =
+              `• **Beginner Concept:** \`int mid = left + (right - left) / 2;\` calculates the middle index safely without integer overflow.\n` +
+              `• **Comparison:** Line 7 tests \`if (arr[mid] == target)\` to evaluate if the middle item is our target.`;
+          } else if (lineNum === 8) {
+            lineExplanation =
+              `• **Beginner Concept:** Target found at middle index! \`return mid;\` returns the 0-based index.\n` +
+              `• **Efficiency:** In the best case, this happens on the very first comparison (O(1)).`;
+          } else if (lineNum === 10 || lineNum === 11) {
+            lineExplanation =
+              `• **Beginner Concept:** Since the array is sorted, if \`arr[mid] < target\`, the target must be in the right half.\n` +
+              `• **Discard Left:** \`left = mid + 1;\` throws away the entire left half including mid.`;
+          } else if (lineNum === 12 || lineNum === 13) {
+            lineExplanation =
+              `• **Beginner Concept:** If \`arr[mid] > target\`, the target must be in the left half.\n` +
+              `• **Discard Right:** \`right = mid - 1;\` throws away the entire right half including mid.`;
+          } else if (lineNum === 16) {
+            lineExplanation =
+              `• **Beginner Concept:** \`return -1;\` is a standard sentinel value in C indicating the target was not found in the array.`;
+          } else {
+            lineExplanation =
+              `• **Beginner Concept:** Boundary setup or loop iteration step in Binary Search.`;
+          }
+        } else {
+          lineExplanation =
+            `• **Low-Level Semantics:** In native C, this maps directly to CPU register operations or direct pointer dereferencing without language runtime overhead.\n` +
+            `• **Memory Impact:** Manipulates elements in contiguous memory layout, maximizing L1/L2 cache locality.`;
+        }
+
         setAnswer(
           `**C Source Code Mapping (Line ${lineNum}):**\n\n` +
           `\`\`\`c\n` +
           `// Line ${lineNum} in ${metadata.name} C implementation\n` +
           `${codeSnippet}\n` +
           `\`\`\`\n\n` +
-          `• **Low-Level Semantics:** In native C, this maps directly to CPU register operations or direct pointer dereferencing without language runtime overhead.\n` +
-          `• **Memory Impact:** Manipulates elements in contiguous memory layout, maximizing L1/L2 cache locality.`
+          `${lineExplanation}`
         );
         break;
       }
@@ -220,12 +291,12 @@ export const AITutorPanel: React.FC<AITutorPanelProps> = ({
     <section className="laboratory-assistant" role="region" aria-label="Intelligent Laboratory Tutor">
       <div className="assistant-header">
         <div className="assistant-title-group">
-          <span className="assistant-badge">INTELLIGENT LAB TUTOR</span>
+          <span className="assistant-badge">Deterministic Lab Tutor</span>
           <span className="assistant-context-tag">
-            {metadata.name} • Step {currentStepIndex + 1}/{totalSteps}
+            {metadata.name} · Step {currentStepIndex + 1}/{totalSteps}
           </span>
-          <span className="assistant-engine-tag" title="Deterministic expert analysis computed entirely in-browser">
-            100% Local Engine
+          <span className="assistant-engine-tag" title="Deterministic analysis computed entirely in-browser with zero external AI calls">
+            100% Offline • Heuristic
           </span>
         </div>
 

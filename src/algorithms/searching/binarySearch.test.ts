@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { binarySearch, isSorted } from './binarySearch';
+import { binarySearch, isSorted, binarySearchMetadata } from './binarySearch';
 
 describe('binarySearch', () => {
   it('should find target in the array (target found)', () => {
@@ -116,6 +116,42 @@ describe('binarySearch', () => {
       expect(steps.length).toBe(1);
       expect(steps[0].isFound).toBe(false);
       expect(steps[0].description).toContain('Error: Binary Search requires a sorted array');
+    });
+  });
+
+  describe('codeLine synchronization', () => {
+    it('should synchronize step execution codeLines with C source code instructions', () => {
+      const array = [2, 5, 8, 12, 16, 23, 38, 56, 72, 91];
+      const stepsFound = binarySearch(array, 23);
+
+      // Step 0: while loop initialization (Line 5)
+      expect(stepsFound[0].codeLine).toBe(5);
+
+      // Comparison step: if (arr[mid] == target) (Line 7)
+      const compStep = stepsFound.find((s) => s.codeLine === 7);
+      expect(compStep).toBeDefined();
+
+      // Found step: return mid; (Line 8)
+      const foundStep = stepsFound[stepsFound.length - 1];
+      expect(foundStep.isFound).toBe(true);
+      expect(foundStep.codeLine).toBe(8);
+
+      // Not found test: return -1; (Line 16)
+      const stepsNotFound = binarySearch(array, 999);
+      const notFoundStep = stepsNotFound[stepsNotFound.length - 1];
+      expect(notFoundStep.isFound).toBe(false);
+      expect(notFoundStep.codeLine).toBe(16);
+    });
+
+    it('should have exact line matching in binarySearchMetadata sourceCode', () => {
+      const cLines = binarySearchMetadata.sourceCode.c.split('\n');
+      expect(cLines[4]).toContain('while (left <= right)'); // Line 5 (1-based)
+      expect(cLines[6]).toContain('if (arr[mid] == target)'); // Line 7 (1-based)
+      expect(cLines[7]).toContain('return mid;'); // Line 8 (1-based)
+      expect(cLines[9]).toContain('if (arr[mid] < target)'); // Line 10 (1-based)
+      expect(cLines[10]).toContain('left = mid + 1;'); // Line 11 (1-based)
+      expect(cLines[12]).toContain('right = mid - 1;'); // Line 13 (1-based)
+      expect(cLines[15]).toContain('return -1;'); // Line 16 (1-based)
     });
   });
 });

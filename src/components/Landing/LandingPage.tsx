@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { CATEGORIES, getAlgorithmsByCategory } from '../../algorithms/registry';
 import { LandingHeroDemo } from './LandingHeroDemo';
+import { ThemeToggle } from '../Navigation/ThemeToggle';
 import type { AlgorithmCategory } from '../../algorithms/types';
 import './LandingPage.css';
 
@@ -52,25 +53,26 @@ export const LandingPage: React.FC<LandingPageProps> = ({
       <header className="editorial-masthead" role="banner">
         <div className="masthead-brand-group">
           <div className="masthead-symbol-lockup">
-            <span className="masthead-mark-glyph" aria-hidden="true">◈</span>
-            <span className="masthead-brand-name">ALGOLENS</span>
+            <span className="masthead-mark-glyph" aria-hidden="true">§</span>
+            <span className="masthead-brand-name">AlgoLens</span>
           </div>
           <span className="masthead-tagline-pipe">/</span>
-          <span className="masthead-descriptor">PRECISION COMPUTER SCIENCE INSTRUMENT</span>
+          <span className="masthead-descriptor">A Living Computational Monograph</span>
         </div>
 
         <nav className="masthead-links-cluster" aria-label="Main Navigation">
           <a href="#curriculum-ledger" className="masthead-text-link">Curriculum</a>
           <a href="#pedagogical-architecture" className="masthead-text-link">Pedagogy</a>
-          <a href="#deterministic-engine" className="masthead-text-link">Engine</a>
+          <a href="#deterministic-engine" className="masthead-text-link">Foundations</a>
+          <ThemeToggle />
           <button
             type="button"
             className="masthead-primary-action"
             onClick={() => onEnterLab()}
             title="Launch the Interactive Learning Laboratory"
           >
-            <span>Enter Laboratory</span>
-            <span className="action-arrow" aria-hidden="true">──▶</span>
+            <span>Open Laboratory</span>
+            <span className="action-arrow" aria-hidden="true">→</span>
           </button>
         </nav>
       </header>
@@ -80,18 +82,18 @@ export const LandingPage: React.FC<LandingPageProps> = ({
         <div className="hero-typography-container">
           <div className="hero-kicker-strip">
             <span className="kicker-pip" />
-            <span>THE CHOREOGRAPHY OF COMPUTATION</span>
+            <span>Thirty-Two Fundamental Algorithms • Frame-by-Frame Proofs</span>
           </div>
 
           <h1 className="hero-sculptural-title">
-            Algorithms made tangible.
+            Algorithms observed as <em>living thought</em>.
           </h1>
 
           <p className="hero-editorial-statement">
             AlgoLens renders algorithmic execution not as simulated graphics, but as
-            frame-accurate mathematical snapshots. Observe memory registers, trace invariant
-            boundaries, and step through 32 fundamental data structures and algorithms with
-            zero cloud dependencies.
+            frame-accurate mathematical proofs in motion. Observe memory registers, trace invariant
+            boundaries, and step through thirty-two fundamental data structures and algorithms with
+            zero external dependencies.
           </p>
 
           <div className="hero-action-row">
@@ -101,14 +103,14 @@ export const LandingPage: React.FC<LandingPageProps> = ({
               onClick={() => onEnterLab()}
             >
               <span>Launch Laboratory</span>
-              <span className="btn-arrow" aria-hidden="true">──▶</span>
+              <span className="btn-arrow" aria-hidden="true">→</span>
             </button>
             <button
               type="button"
               className="hero-index-jump-btn"
               onClick={scrollToCurriculum}
             >
-              <span>Curriculum Index (32 Instruments)</span>
+              <span>Curriculum Index (32 Works)</span>
               <span className="btn-down-glyph" aria-hidden="true">↓</span>
             </button>
           </div>
@@ -120,27 +122,27 @@ export const LandingPage: React.FC<LandingPageProps> = ({
         </div>
       </section>
 
-      {/* Narrative Section 1: Three Architectural Postulates */}
+      {/* Narrative Section 1: Three Architectural Tenets */}
       <section className="postulates-section" id="deterministic-engine" aria-label="Design Principles">
         <div className="section-super-heading">
-          <span className="super-num">01</span>
+          <span className="super-num">I</span>
           <span className="super-lbl">FOUNDATIONAL ARCHITECTURE</span>
         </div>
 
         <div className="postulates-triad">
           <div className="postulate-col">
-            <span className="postulate-index">POSTULATE 01</span>
+            <span className="postulate-index">Principle I</span>
             <h2 className="postulate-title">Pure Execution Snapshots</h2>
             <p className="postulate-text">
               We never approximate algorithm behavior with decorative CSS animations or mock timers.
-              Every rendered frame is a mathematically verified, immutable execution snapshot
+              Every rendered frame is an immutable, mathematically verified execution snapshot
               extracted directly from pure algorithmic logic before drawing a single pixel.
             </p>
             <span className="postulate-meta">Deterministic • Reproducible • Frame-accurate</span>
           </div>
 
           <div className="postulate-col">
-            <span className="postulate-index">POSTULATE 02</span>
+            <span className="postulate-index">Principle II</span>
             <h2 className="postulate-title">Syntactic & Spatial Coherence</h2>
             <p className="postulate-text">
               Abstract data structures and real C language source lines are linked at the instruction level.
@@ -151,14 +153,14 @@ export const LandingPage: React.FC<LandingPageProps> = ({
           </div>
 
           <div className="postulate-col">
-            <span className="postulate-index">POSTULATE 03</span>
+            <span className="postulate-index">Principle III</span>
             <h2 className="postulate-title">Predictive Cognition</h2>
             <p className="postulate-text">
               Passive observation produces familiarity, not true conceptual mastery.
               AlgoLens turns learners into active participants by prompting them to predict
               partition pivots, loop invariants, and pointer destinations before the next step executes.
             </p>
-            <span className="postulate-meta">Active Prediction • Real Feedback • Winning Streaks</span>
+            <span className="postulate-meta">Active Prediction • Real Feedback • Verified Progress</span>
           </div>
         </div>
       </section>
@@ -167,7 +169,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
       <section className="curriculum-ledger-section" id="curriculum-ledger" aria-label="Curriculum Ledger">
         <div className="ledger-header-row">
           <div className="section-super-heading">
-            <span className="super-num">02</span>
+            <span className="super-num">II</span>
             <span className="super-lbl">CURRICULUM REGISTRY</span>
           </div>
           <h2 className="ledger-main-title">Thirty-two algorithms across six chapters</h2>
@@ -185,7 +187,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
             className={`filter-pill-btn ${selectedCategory === 'all' ? 'is-active' : ''}`}
             onClick={() => setSelectedCategory('all')}
           >
-            <span>All 32 Algorithms</span>
+            <span>All 32 Works</span>
           </button>
           {CATEGORIES.map((cat, idx) => {
             const isActive = selectedCategory === cat.id;
@@ -208,12 +210,12 @@ export const LandingPage: React.FC<LandingPageProps> = ({
         {/* Editorial Ledger Rows */}
         <div className="ledger-table-container">
           <div className="ledger-table-head">
-            <span className="th-col col-idx">CH</span>
-            <span className="th-col col-name">ALGORITHM</span>
-            <span className="th-col col-idea">INVARIANT & KEY THESIS</span>
-            <span className="th-col col-time">TIME (AVG)</span>
-            <span className="th-col col-diff">DIFFICULTY</span>
-            <span className="th-col col-action">ACTION</span>
+            <span className="th-col col-idx">Chapter</span>
+            <span className="th-col col-name">Algorithm</span>
+            <span className="th-col col-idea">Invariant & Thesis</span>
+            <span className="th-col col-time">Time (Avg)</span>
+            <span className="th-col col-diff">Difficulty</span>
+            <span className="th-col col-action">Open</span>
           </div>
 
           <div className="ledger-table-body" role="list">
@@ -232,7 +234,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
 
                   <div className="row-col col-name">
                     <span className="algo-display-name">{algo.metadata.name}</span>
-                    {isCompleted && <span className="solved-tag">✓ Solved</span>}
+                    {isCompleted && <span className="solved-tag">✓ Mastered</span>}
                   </div>
 
                   <div className="row-col col-idea">
@@ -259,8 +261,8 @@ export const LandingPage: React.FC<LandingPageProps> = ({
                       }}
                       title={`Launch ${algo.metadata.name} in Laboratory`}
                     >
-                      <span>Launch</span>
-                      <span className="launch-glyph" aria-hidden="true">↗</span>
+                      <span>Study</span>
+                      <span className="launch-glyph" aria-hidden="true">→</span>
                     </button>
                   </div>
                 </div>
@@ -273,14 +275,14 @@ export const LandingPage: React.FC<LandingPageProps> = ({
       {/* Narrative Section 3: Three Modalities of Mastery */}
       <section className="pedagogical-architecture-section" id="pedagogical-architecture" aria-label="Pedagogy">
         <div className="section-super-heading">
-          <span className="super-num">03</span>
+          <span className="super-num">III</span>
           <span className="super-lbl">PEDAGOGICAL MODALITIES</span>
         </div>
 
         <div className="pedagogy-spread">
           <div className="pedagogy-card explore">
             <div className="pedagogy-card-header">
-              <span className="pedagogy-num">MODE 01</span>
+              <span className="pedagogy-num">Mode I</span>
               <span className="pedagogy-symbol">🔭</span>
             </div>
             <h3 className="pedagogy-title">Explore Mode</h3>
@@ -298,7 +300,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
 
           <div className="pedagogy-card guided">
             <div className="pedagogy-card-header">
-              <span className="pedagogy-num">MODE 02</span>
+              <span className="pedagogy-num">Mode II</span>
               <span className="pedagogy-symbol">🧭</span>
             </div>
             <h3 className="pedagogy-title">Guided Mode</h3>
@@ -316,7 +318,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
 
           <div className="pedagogy-card challenge">
             <div className="pedagogy-card-header">
-              <span className="pedagogy-num">MODE 03</span>
+              <span className="pedagogy-num">Mode III</span>
               <span className="pedagogy-symbol">🎯</span>
             </div>
             <h3 className="pedagogy-title">Challenge Mode</h3>
@@ -338,7 +340,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
       <section className="integrity-banner-section" aria-label="System Integrity">
         <div className="integrity-banner-box">
           <div className="integrity-content">
-            <span className="integrity-kicker">HONEST LOCAL INTELLIGENCE</span>
+            <span className="integrity-kicker">Local Deterministic Engine</span>
             <h2 className="integrity-headline">Mathematical fidelity. Zero cloud hallucinations.</h2>
             <p className="integrity-paragraph">
               AlgoLens does not connect to external LLMs that hallucinate algorithmic steps.
@@ -361,8 +363,8 @@ export const LandingPage: React.FC<LandingPageProps> = ({
               className="integrity-launch-btn"
               onClick={() => onEnterLab()}
             >
-              <span>Enter the Laboratory</span>
-              <span className="btn-glyph" aria-hidden="true">──▶</span>
+              <span>Enter Laboratory</span>
+              <span className="btn-glyph" aria-hidden="true">→</span>
             </button>
           </div>
         </div>
@@ -373,11 +375,11 @@ export const LandingPage: React.FC<LandingPageProps> = ({
         <div className="footer-top-grid">
           <div className="footer-col-brand">
             <div className="footer-brand-title">
-              <span className="brand-glyph" aria-hidden="true">◈</span>
-              <span>ALGOLENS</span>
+              <span className="brand-glyph" aria-hidden="true">§</span>
+              <span>AlgoLens</span>
             </div>
             <p className="footer-brand-desc">
-              An interactive technical instrument dedicated to the art, mathematics,
+              An interactive computational edition dedicated to the art, mathematics,
               and spatial choreography of data structures and algorithms.
             </p>
           </div>
@@ -403,7 +405,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
           </div>
 
           <div className="footer-col-shortcuts">
-            <span className="footer-col-title">Keyboard Hotkeys</span>
+            <span className="footer-col-title">Keyboard Navigation</span>
             <div className="footer-shortcuts-list">
               <div className="shortcut-item"><kbd>Space</kbd> <span>Play / Pause</span></div>
               <div className="shortcut-item"><kbd>←</kbd> <span>Step Backward</span></div>
@@ -416,7 +418,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
         </div>
 
         <div className="footer-bottom-bar">
-          <span>© AlgoLens • Client-Side Mathematical Visualizer • Zero Cloud Trackers</span>
+          <span>AlgoLens • A Living Computational Edition • Local-First Execution</span>
           <button
             type="button"
             className="footer-back-to-top"

@@ -1,61 +1,209 @@
-:root {
-  /* Typography Families */
-  --font-display: 'Space Grotesk', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+/* ==========================================================================
+   AlgoLens — Editorial Minimalism × Computational Art × Precision Instrumentation
+   Authored Design System: Warm Paper (#F3EFE6), Sumi Ink (#20201D), Vermilion (#C94B36),
+   Stone (#DCD6CA), Sage (#526B5D), Ochre (#D7B66D)
+   ========================================================================== */
+
+:root,
+[data-theme="light"] {
+  /* Typographic Hierarchy: Expressive Serif Display, Reading Sans, Technical Monospace */
+  --font-display: 'Newsreader', Georgia, 'Times New Roman', serif;
+  --font-serif: 'Newsreader', Georgia, 'Times New Roman', serif;
+  --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
   --font-mono: 'JetBrains Mono', 'Fira Code', 'SF Mono', Menlo, Consolas, monospace;
 
-  /* Architectural Warm Graphite Foundations */
-  --bg-canvas: #090a0f;
-  --bg-surface: #0f1118;
-  --bg-surface-elevated: #151822;
-  --bg-surface-hover: #1b1f2c;
-  --bg-active: rgba(56, 189, 248, 0.1);
+  /* Surfaces & Canvas: Warm Paper Ground */
+  --bg-canvas: #f3efe6;            /* Warm Paper foundation */
+  --bg-canvas-translucent: rgba(243, 239, 230, 0.94);
+  --bg-surface: #ffffff;           /* Clean Drafting Surface */
+  --bg-surface-elevated: #faf7f0;  /* Pressed Paper Elevation */
+  --bg-surface-hover: #eae4d6;     /* Stone Surface Hover */
+  --bg-active: rgba(201, 75, 54, 0.08);
+  --bg-wash: radial-gradient(circle at 50% 0%, rgba(243, 239, 230, 0.9), transparent 75%);
 
-  /* Precise Architectural Hairline Dividers (Fewer heavy borders) */
-  --border-subtle: rgba(255, 255, 255, 0.07);
-  --border-medium: rgba(255, 255, 255, 0.12);
-  --border-strong: rgba(255, 255, 255, 0.22);
-  --border-accent: rgba(56, 189, 248, 0.4);
-  --border-elevated: rgba(255, 255, 255, 0.16);
+  /* Fine Architectural Rules & Borders */
+  --border-subtle: rgba(32, 32, 29, 0.08);
+  --border-medium: #dcd6ca;        /* Architectural Stone Hairline */
+  --border-strong: rgba(32, 32, 29, 0.26);
+  --border-accent: #c94b36;        /* Vermilion Accent Rule */
+  --border-elevated: #dcd6ca;
 
-  /* High-Contrast Typography Hierarchy */
-  --text-primary: #f8fafc;
-  --text-secondary: #94a3b8;
-  --text-muted: #64748b;
-  --text-faint: #475569;
+  /* Ink Typography Hierarchy (High-Contrast Sumi Ink on Paper) */
+  --text-primary: #20201d;         /* Deep Sumi Ink (15.5:1 contrast against warm paper) */
+  --text-secondary: #46443e;       /* Stone Carbon for continuous reading */
+  --text-muted: #6f6b62;           /* Umber Graphite for annotations & metadata */
+  --text-faint: #9c968b;           /* Pencil Stone for technical notes */
 
-  /* Sophisticated Semantic Palette (Purpose-driven, not fluorescent) */
-  --accent-cyan: #38bdf8;          /* Pointers, active indices, navigational focus */
-  --accent-amber: #f59e0b;         /* Active comparisons, evaluating invariants */
-  --accent-coral: #fb7185;         /* Swaps, mutations, element displacements */
-  --accent-emerald: #34d399;       /* Matches, sorted domains, discovered targets */
-  --accent-slate: #64748b;         /* Discarded, out-of-range elements */
-  --accent-violet: #a78bfa;        /* Memory structures, tree & graph frontiers */
+  /* Restrained Signature Accent */
+  --accent-vermilion: #c94b36;     /* Primary Vermilion Accent */
+  --accent-primary: #c94b36;
+  --accent-primary-hover: #b33a26;
+  --accent-terracotta: #c94b36;
+  --accent-coral: #c94b36;
+  --accent-glow: rgba(201, 75, 54, 0.12);
 
-  /* Backwards compatibility aliases */
-  --accent-primary: var(--accent-cyan);
-  --accent-primary-hover: #0284c7;
-  --accent-glow: rgba(56, 189, 248, 0.16);
-  --accent-secondary: var(--accent-violet);
-  --accent-rose: #f43f5e;
+  /* Semantic Computational State Pigments */
+  --accent-sage: #526b5d;          /* Sage: Discovery, matches, sorted domains */
+  --accent-emerald: #526b5d;
+  --accent-ochre: #d7b66d;         /* Ochre: Active evaluation, invariants, comparisons */
+  --accent-amber: #d7b66d;
+  --accent-slate: #3d5a6c;         /* Slate: Range boundaries, pointers, frames */
+  --accent-cyan: #3d5a6c;
+  --accent-crimson: #b83e38;       /* Crimson: Discarded, targets missing, boundary exceptions */
+  --accent-rose: #b83e38;
+  --accent-indigo: #4a4e69;        /* Indigo: Graph topologies, trees, frontiers */
+  --accent-violet: #4a4e69;
+  --accent-secondary: var(--accent-indigo);
 
-  /* Radii */
-  --radius-xs: 4px;
-  --radius-sm: 6px;
-  --radius-md: 10px;
-  --radius-lg: 14px;
+  /* Accessible Semantic State Tints (Calculated for Paper) */
+  --tint-amber-bg: #f9f3e3;
+  --tint-amber-border: #ecddb4;
+  --tint-amber-text: #785c20;
+
+  --tint-terracotta-bg: #faeae7;
+  --tint-terracotta-border: #f0bcb3;
+  --tint-terracotta-text: #8e2b1b;
+
+  --tint-emerald-bg: #e8efea;
+  --tint-emerald-border: #c2d5c8;
+  --tint-emerald-text: #2d4436;
+
+  --tint-rose-bg: #fbebea;
+  --tint-rose-border: #f3bcb9;
+  --tint-rose-text: #8c2520;
+
+  --tint-cyan-bg: #ebf0f4;
+  --tint-cyan-border: #c6d5de;
+  --tint-cyan-text: #263c4a;
+
+  /* Code Syntax Tokens: Deep Sumi Slate */
+  --syntax-bg: #1a1916;
+  --syntax-text: #f3efe6;
+  --syntax-comment: #8c877c;
+  --syntax-keyword: #e05a44;       /* Vermilion keyword */
+  --syntax-type: #6b9ebd;          /* Slate type */
+  --syntax-string: #729380;        /* Sage string */
+  --syntax-number: #e5c57f;        /* Ochre number */
+  --syntax-highlight: rgba(201, 75, 54, 0.22);
+  --syntax-highlight-border: #c94b36;
+
+  /* Tactile Shadows & Material Elevating */
+  --shadow-sm: 0 1px 3px rgba(32, 32, 29, 0.04), 0 1px 2px rgba(32, 32, 29, 0.03);
+  --shadow-md: 0 4px 14px -2px rgba(32, 32, 29, 0.06), 0 2px 5px -1px rgba(32, 32, 29, 0.03);
+  --shadow-lg: 0 14px 32px -4px rgba(32, 32, 29, 0.08), 0 3px 10px -2px rgba(32, 32, 29, 0.04);
+  --shadow-glow: 0 0 16px rgba(201, 75, 54, 0.12);
+
+  /* Scrollbar */
+  --scrollbar-thumb: rgba(32, 32, 29, 0.16);
+  --scrollbar-thumb-hover: rgba(32, 32, 29, 0.32);
+
+  /* Radii: Precise, Restrained */
+  --radius-xs: 3px;
+  --radius-sm: 5px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
   --radius-pill: 9999px;
-
-  /* Tactile Editorial Shadows */
-  --shadow-sm: 0 2px 6px rgba(0, 0, 0, 0.35);
-  --shadow-md: 0 10px 24px -6px rgba(0, 0, 0, 0.6);
-  --shadow-lg: 0 20px 48px -10px rgba(0, 0, 0, 0.75);
-  --shadow-glow: 0 0 20px var(--accent-glow);
 
   /* Motion Timing */
   --transition-fast: 140ms cubic-bezier(0.16, 1, 0.3, 1);
   --transition-normal: 220ms cubic-bezier(0.16, 1, 0.3, 1);
 }
+
+/* ==========================================================================
+   Dark Theme: Warm Obsidian & Sumi Charcoal
+   Deep charcoal layers, warm bone typography (#F3EFE6), radiant vermilion
+   ========================================================================== */
+
+[data-theme="dark"] {
+  /* Surfaces & Canvas: Deep Charcoal & Warm Obsidian */
+  --bg-canvas: #141311;            /* Deep Warm Obsidian Canvas */
+  --bg-canvas-translucent: rgba(20, 19, 17, 0.94);
+  --bg-surface: #1d1b17;           /* Warm Drafting Plate */
+  --bg-surface-elevated: #25231e;  /* Layered Stone Plate */
+  --bg-surface-hover: #2e2b25;     /* Surface Hover */
+  --bg-active: rgba(224, 90, 68, 0.16);
+  --bg-wash: radial-gradient(circle at 50% 0%, rgba(37, 35, 30, 0.8), transparent 75%);
+
+  /* Fine Architectural Rules & Borders */
+  --border-subtle: rgba(243, 239, 230, 0.07);
+  --border-medium: #3a362f;        /* Dark Stone Hairline */
+  --border-strong: rgba(243, 239, 230, 0.24);
+  --border-accent: #e05a44;        /* Radiant Vermilion Rule */
+  --border-elevated: #3a362f;
+
+  /* Typography: High-Contrast Warm Bone on Charcoal */
+  --text-primary: #f5f2eb;         /* Warm Bone White (15.5:1 contrast against dark canvas) */
+  --text-secondary: #cdc8bc;       /* Bone Gray for continuous reading */
+  --text-muted: #9c9689;           /* Aged Stone Silver for annotations */
+  --text-faint: #6c675c;           /* Soft Dark Carbon */
+
+  /* Signature Vermilion Accent (calibrated for dark background) */
+  --accent-vermilion: #e05a44;
+  --accent-primary: #e05a44;
+  --accent-primary-hover: #eb735f;
+  --accent-terracotta: #e05a44;
+  --accent-coral: #e05a44;
+  --accent-glow: rgba(224, 90, 68, 0.18);
+
+  /* Semantic State Pigments */
+  --accent-sage: #729380;
+  --accent-emerald: #729380;
+  --accent-ochre: #e5c57f;
+  --accent-amber: #e5c57f;
+  --accent-slate: #6b9ebd;
+  --accent-cyan: #6b9ebd;
+  --accent-crimson: #e26d68;
+  --accent-rose: #e26d68;
+  --accent-indigo: #8b8ea8;
+  --accent-violet: #8b8ea8;
+  --accent-secondary: var(--accent-indigo);
+
+  /* Accessible Semantic State Background Tints */
+  --tint-amber-bg: rgba(229, 197, 127, 0.15);
+  --tint-amber-border: rgba(229, 197, 127, 0.35);
+  --tint-amber-text: #f0d59b;
+
+  --tint-terracotta-bg: rgba(224, 90, 68, 0.16);
+  --tint-terracotta-border: rgba(224, 90, 68, 0.38);
+  --tint-terracotta-text: #f39384;
+
+  --tint-emerald-bg: rgba(114, 147, 128, 0.16);
+  --tint-emerald-border: rgba(114, 147, 128, 0.36);
+  --tint-emerald-text: #96b7a3;
+
+  --tint-rose-bg: rgba(226, 109, 104, 0.16);
+  --tint-rose-border: rgba(226, 109, 104, 0.38);
+  --tint-rose-text: #f39f9b;
+
+  --tint-cyan-bg: rgba(107, 158, 189, 0.16);
+  --tint-cyan-border: rgba(107, 158, 189, 0.35);
+  --tint-cyan-text: #9ac2d9;
+
+  /* Code Syntax Tokens */
+  --syntax-bg: #12110f;
+  --syntax-text: #f3efe6;
+  --syntax-comment: #8c877c;
+  --syntax-keyword: #e05a44;
+  --syntax-type: #6b9ebd;
+  --syntax-string: #729380;
+  --syntax-number: #e5c57f;
+  --syntax-highlight: rgba(224, 90, 68, 0.24);
+  --syntax-highlight-border: #e05a44;
+
+  /* Tactile Shadows */
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.4), 0 1px 2px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 6px 16px -3px rgba(0, 0, 0, 0.5), 0 2px 6px -1px rgba(0, 0, 0, 0.32);
+  --shadow-lg: 0 18px 36px -6px rgba(0, 0, 0, 0.65), 0 4px 12px -2px rgba(0, 0, 0, 0.38);
+  --shadow-glow: 0 0 16px rgba(224, 90, 68, 0.18);
+
+  /* Scrollbar */
+  --scrollbar-thumb: rgba(243, 239, 230, 0.18);
+  --scrollbar-thumb-hover: rgba(243, 239, 230, 0.32);
+}
+
+/* ==========================================================================
+   Global Baseline Styles & Reset
+   ========================================================================== */
 
 * {
   box-sizing: border-box;
@@ -70,14 +218,10 @@ body {
   min-height: 100vh;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  line-height: 1.5;
+  line-height: 1.55;
   overflow-x: hidden;
-  /* Subdued Architectural Grid Background */
-  background-image:
-    linear-gradient(to right, rgba(255, 255, 255, 0.02) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(255, 255, 255, 0.02) 1px, transparent 1px),
-    radial-gradient(ellipse 80% 50% at 50% -10%, rgba(92, 225, 230, 0.05), transparent 70%);
-  background-size: 32px 32px, 32px 32px, 100% 100%;
+  background-image: var(--bg-wash);
+  transition: background-color var(--transition-normal), color var(--transition-normal);
 }
 
 #root {
@@ -86,7 +230,7 @@ body {
   flex-direction: column;
 }
 
-/* Custom Scrollbar for Technical Feel */
+/* Custom Scrollbar */
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;
@@ -97,17 +241,17 @@ body {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.12);
+  background: var(--scrollbar-thumb);
   border-radius: var(--radius-pill);
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(255, 255, 255, 0.22);
+  background: var(--scrollbar-thumb-hover);
 }
 
 /* Accessible Focus Ring */
 :focus-visible {
-  outline: 2px solid var(--accent-cyan);
+  outline: 2px solid var(--accent-vermilion);
   outline-offset: 2px;
 }
 

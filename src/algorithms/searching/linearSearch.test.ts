@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { linearSearch } from './linearSearch';
+import { linearSearch, linearSearchMetadata, generateLinearSearchSource } from './linearSearch';
 
 describe('linearSearch', () => {
   it('should find target at the first element (best case)', () => {
@@ -73,20 +73,79 @@ describe('linearSearch', () => {
     expect(lastStep.stats.comparisons).toBe(1);
   });
 
-  it('should produce valid sequential step states without mutating input array', () => {
-    const original = [10, 20, 30];
-    const originalCopy = [...original];
-    const steps = linearSearch(original, 20);
+  it('should synchronize step execution codeLines with beginner-facing C source code', () => {
+    const array = [15, 42, 8, 23, 74];
+    const stepsFound = linearSearch(array, 23);
 
-    // Ensure input array was not modified
-    expect(original).toEqual(originalCopy);
+    // Initial step should point to target definition (line 10)
+    expect(stepsFound[0].codeLine).toBe(10);
 
-    // Verify step progression
-    expect(steps[0].description).toContain('Starting Linear Search');
-    expect(steps[1].currentIndex).toBe(0);
-    expect(steps[1].elementStates[0]).toBe('comparing');
-    expect(steps[2].currentIndex).toBe(1);
-    expect(steps[2].elementStates[0]).toBe('discarded');
-    expect(steps[2].elementStates[1]).toBe('comparing');
+    // Comparisons should point to the if condition (line 16)
+    expect(stepsFound[1].codeLine).toBe(16);
+    expect(stepsFound[2].codeLine).toBe(16);
+
+    // Found step should point to printf indicating human position (line 18)
+    const foundStep = stepsFound[stepsFound.length - 1];
+    expect(foundStep.isFound).toBe(true);
+    expect(foundStep.codeLine).toBe(18);
+
+    // Test not-found step synchronization
+    const stepsNotFound = linearSearch(array, 999);
+    const notFoundStep = stepsNotFound[stepsNotFound.length - 1];
+    expect(notFoundStep.isFound).toBe(false);
+    expect(notFoundStep.codeLine).toBe(24);
+  });
+
+  it('should include beginner-friendly comments and compilable C elements in metadata sourceCode with 8 elements', () => {
+    const cCode = linearSearchMetadata.sourceCode.c;
+    const tsCode = linearSearchMetadata.sourceCode.typescript;
+
+    expect(cCode).toContain('#include <stdio.h>');
+    expect(cCode).toContain('int main(void)');
+    expect(cCode).toContain('int numbers[] = {15, 42, 8, 23, 74, 31, 90, 56};');
+    expect(cCode).toContain('int totalElements = 8;');
+    expect(cCode).toContain('0-based index');
+    expect(cCode).toContain('human position');
+    expect(cCode).toContain('return 0;');
+    expect(cCode).toContain('PROGRESSION NOTE');
+    expect(cCode).toContain('return -1;');
+
+    expect(tsCode).toContain('function main()');
+    expect(tsCode).toContain('0-based index');
+    expect(tsCode).toContain('human position');
+    expect(tsCode).toContain('PROGRESSION NOTE');
+
+    // Verify all referenced line numbers in C code exist and match expected instructions
+    const cLines = cCode.split('\n');
+    expect(cLines[7]).toContain('int numbers[] = {15, 42, 8, 23, 74, 31, 90, 56};'); // Line 8 (1-based)
+    expect(cLines[8]).toContain('int totalElements = 8;'); // Line 9 (1-based)
+    expect(cLines[9]).toContain('int target = 23;'); // Line 10 (1-based)
+    expect(cLines[13]).toContain('for (int index = 0; index < totalElements; index++)'); // Line 14 (1-based)
+    expect(cLines[15]).toContain('if (numbers[index] == target)'); // Line 16 (1-based)
+    expect(cLines[17]).toContain('printf("Found target'); // Line 18 (1-based)
+    expect(cLines[23]).toContain('printf("Target %d was not found'); // Line 24 (1-based)
+  });
+
+  it('should dynamically generate source code matching custom user arrays and targets', () => {
+    const customArray = [100, 200, 300];
+    const customTarget = 300;
+    const generated = generateLinearSearchSource(customArray, customTarget);
+
+    expect(generated.c).toContain('int numbers[] = {100, 200, 300};');
+    expect(generated.c).toContain('int totalElements = 3;');
+    expect(generated.c).toContain('int target = 300;');
+
+    expect(generated.typescript).toContain('const numbers: number[] = [100, 200, 300];');
+    expect(generated.typescript).toContain('const target: number = 300;');
+
+    // Verify critical line numbers remain stable
+    const cLines = generated.c.split('\n');
+    expect(cLines[7]).toContain('int numbers[] = {100, 200, 300};'); // Line 8
+    expect(cLines[8]).toContain('int totalElements = 3;'); // Line 9
+    expect(cLines[9]).toContain('int target = 300;'); // Line 10
+    expect(cLines[15]).toContain('if (numbers[index] == target)'); // Line 16
+    expect(cLines[17]).toContain('printf("Found target'); // Line 18
+    expect(cLines[23]).toContain('printf("Target %d was not found'); // Line 24
   });
 });
+

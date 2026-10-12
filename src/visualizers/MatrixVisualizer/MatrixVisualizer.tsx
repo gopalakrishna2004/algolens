@@ -18,7 +18,7 @@ export const MatrixVisualizer: React.FC<MatrixVisualizerProps> = ({ step }) => {
       {/* Top Banner: Action */}
       <div className="matrix-telemetry-strip">
         <div className="matrix-op-tag">
-          OP // {action ? action.toUpperCase() : 'GRID STEP'}
+          {action ? action.charAt(0).toUpperCase() + action.slice(1) : 'Grid Operation'}
         </div>
       </div>
 
@@ -27,8 +27,8 @@ export const MatrixVisualizer: React.FC<MatrixVisualizerProps> = ({ step }) => {
         {currentCallStack && currentCallStack.length > 0 && (
           <div className="call-stack-column">
             <div className="call-stack-header">
-              <span>CALL STACK</span>
-              <span>// DEPTH {currentCallStack.length}</span>
+              <span>Call Stack</span>
+              <span className="call-stack-depth">Depth {currentCallStack.length}</span>
             </div>
             <div className="call-stack-chamber">
               {currentCallStack.map((frame, idx) => {
@@ -41,7 +41,7 @@ export const MatrixVisualizer: React.FC<MatrixVisualizerProps> = ({ step }) => {
                     <span>{frame}</span>
                     {isTop && (
                       <span className="call-stack-top-badge">
-                        ACTIVE
+                        Active
                       </span>
                     )}
                   </div>
@@ -55,8 +55,8 @@ export const MatrixVisualizer: React.FC<MatrixVisualizerProps> = ({ step }) => {
         {matrix && matrix.length > 0 && (
           <div className="dp-table-column">
             <div className="dp-table-header">
-              <span>DP MEMOIZATION TABLE</span>
-              <span>// MATRIX [{matrix.length} × {matrix[0]?.length || 0}]</span>
+              <span>Memoization Table</span>
+              <span className="dp-table-dim">{matrix.length} × {matrix[0]?.length || 0}</span>
             </div>
             <table className="dp-table-grid">
               {/* Column Headers */}

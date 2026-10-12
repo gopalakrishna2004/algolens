@@ -26,7 +26,7 @@ export const KeyboardShortcutsModal: React.FC<KeyboardShortcutsModalProps> = ({ 
         <div className="shortcuts-modal-header">
           <div className="header-title-box">
             <span className="optic-dot" />
-            <h2 className="shortcuts-modal-title">KEYBOARD INSTRUMENT SHORTCUTS</h2>
+            <h2 className="shortcuts-modal-title">Keyboard Shortcuts</h2>
           </div>
           <button
             type="button"

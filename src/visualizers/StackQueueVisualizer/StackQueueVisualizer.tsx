@@ -11,16 +11,16 @@ export const StackQueueVisualizer: React.FC<StackQueueVisualizerProps> = ({ step
 
   return (
     <div className="stack-queue-stage">
-      {/* Lab Telemetry Action Tag */}
+      {/* Editorial Telemetry Strip */}
       <div className="sq-telemetry-strip">
         <div className="sq-op-tag">
-          OP // {step.action} {step.activeItem !== undefined ? `(${step.activeItem})` : ''}
+          {step.action.charAt(0).toUpperCase() + step.action.slice(1)} {step.activeItem !== undefined ? `(${step.activeItem})` : ''}
         </div>
         <div className="sq-stat-pill">
-          STRUCTURE // <strong>{isStack ? 'STACK (LIFO)' : 'QUEUE (FIFO)'}</strong>
+          Structure: <strong>{isStack ? 'Stack (LIFO)' : 'Queue (FIFO)'}</strong>
         </div>
         <div className="sq-stat-pill">
-          SIZE // <strong>{step.items.length}</strong>
+          Size: <strong>{step.items.length}</strong>
         </div>
       </div>
 
@@ -29,14 +29,14 @@ export const StackQueueVisualizer: React.FC<StackQueueVisualizerProps> = ({ step
         <div className="stack-layout">
           <div className="stack-chamber-container">
             <div className="stack-entry-indicator">
-              ▼ PUSH / POP APERTURE
+              Push &amp; Pop Aperture
             </div>
 
             {/* Stack Container Chamber */}
             <div className="stack-chamber">
               {step.items.length === 0 ? (
                 <div className="stack-chamber-empty">
-                  (Empty Stack Chamber)
+                  Empty stack
                 </div>
               ) : (
                 step.items.map((val, idx) => {
@@ -53,7 +53,7 @@ export const StackQueueVisualizer: React.FC<StackQueueVisualizerProps> = ({ step
                         <span className="stack-slot-index">[{idx}]</span>
                         <span className="stack-val">{val}</span>
                       </div>
-                      {isTop && <span className="stack-top-badge">TOP</span>}
+                      {isTop && <span className="stack-top-badge">Top</span>}
                     </div>
                   );
                 })
@@ -61,11 +61,11 @@ export const StackQueueVisualizer: React.FC<StackQueueVisualizerProps> = ({ step
             </div>
           </div>
 
-          {/* Stack Legend & Hardware Telemetry */}
+          {/* Stack Legend & Editorial Notation */}
           <div className="stack-legend-panel">
-            <div className="stack-legend-title">▲ TOP REGISTER</div>
+            <div className="stack-legend-title">Top Register</div>
             <div className="stack-legend-meta">
-              Top Index: <strong>{step.items.length > 0 ? step.items.length - 1 : 'NULL'}</strong>
+              Top Index: <strong>{step.items.length > 0 ? step.items.length - 1 : 'Empty'}</strong>
             </div>
             <div className="stack-legend-meta">
               LIFO discipline: pushes and pops occur strictly at the top aperture.
@@ -78,14 +78,14 @@ export const StackQueueVisualizer: React.FC<StackQueueVisualizerProps> = ({ step
           <div className="queue-conveyor-row">
             {/* Front Exit Gate */}
             <div className="queue-gate front">
-              <span>◀ DEQUEUE</span>
-              <span>(FRONT)</span>
+              <span>Front</span>
+              <span>(Dequeue)</span>
             </div>
 
             {/* Conveyor Track */}
             <div className="queue-conveyor-track">
               {step.items.length === 0 ? (
-                <div className="queue-empty-msg">(Empty Queue Track)</div>
+                <div className="queue-empty-msg">Empty queue</div>
               ) : (
                 step.items.map((val, idx) => {
                   const isFront = idx === 0;
@@ -101,7 +101,7 @@ export const StackQueueVisualizer: React.FC<StackQueueVisualizerProps> = ({ step
                     <div key={idx} className={capsuleClass}>
                       <span className="queue-capsule-val">{val}</span>
                       <span className="queue-capsule-tag">
-                        {isFront ? 'FRONT' : isRear ? 'REAR' : `[${idx}]`}
+                        {isFront ? 'Front' : isRear ? 'Rear' : `[${idx}]`}
                       </span>
                     </div>
                   );
@@ -111,13 +111,13 @@ export const StackQueueVisualizer: React.FC<StackQueueVisualizerProps> = ({ step
 
             {/* Rear Entry Gate */}
             <div className="queue-gate rear">
-              <span>◀ ENQUEUE</span>
-              <span>(REAR)</span>
+              <span>Rear</span>
+              <span>(Enqueue)</span>
             </div>
           </div>
 
           <div className="queue-policy-note">
-            FIFO Discipline // Items traverse monotonically from REAR entry to FRONT departure.
+            FIFO discipline: elements enter at the rear and depart from the front.
           </div>
         </div>
       )}

@@ -21,15 +21,14 @@
 
 .trie-op-tag {
   padding: 5px 14px;
-  border-radius: 6px;
-  background: rgba(92, 225, 230, 0.08);
-  border: 1px solid rgba(92, 225, 230, 0.25);
-  color: var(--accent-cyan, #5ce1e6);
-  font-size: 0.78rem;
+  border-radius: var(--radius-pill);
+  background: var(--tint-terracotta-bg);
+  border: 1px solid var(--tint-terracotta-border);
+  color: var(--tint-terracotta-text);
+  font-size: 0.76rem;
   font-weight: 600;
-  font-family: var(--font-mono, monospace);
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
+  font-family: var(--font-sans);
+  letter-spacing: 0.02em;
   display: flex;
   align-items: center;
   gap: 6px;
@@ -40,22 +39,22 @@
   width: 6px;
   height: 6px;
   border-radius: 50%;
-  background: var(--accent-cyan, #5ce1e6);
-  box-shadow: 0 0 8px var(--accent-cyan, #5ce1e6);
+  background: var(--accent-terracotta);
 }
 
 .trie-word-pill {
   padding: 5px 12px;
-  border-radius: 6px;
-  background: var(--bg-surface, #0c1018);
-  border: 1px solid var(--border-subtle, #1a2233);
-  font-size: 0.75rem;
-  font-family: var(--font-mono, monospace);
-  color: var(--text-secondary, #94a3b8);
+  border-radius: var(--radius-sm);
+  background: var(--bg-surface-elevated);
+  border: 1px solid var(--border-subtle);
+  font-size: 0.76rem;
+  font-family: var(--font-sans);
+  color: var(--text-secondary);
 }
 
 .trie-word-pill strong {
-  color: var(--accent-cyan, #5ce1e6);
+  color: var(--accent-terracotta);
+  font-family: var(--font-mono);
 }
 
 .trie-canvas-container {
@@ -76,53 +75,54 @@
 
 .trie-node-disc {
   border-radius: 50%;
-  background: var(--bg-surface-elevated, #121824);
-  border: 2px solid var(--border-strong, #27344c);
+  background: var(--bg-surface);
+  border: 1.5px solid var(--border-medium);
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  color: var(--text-primary, #f0f4fc);
-  font-family: var(--font-mono, monospace);
-  font-weight: 700;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.35);
-  transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+  color: var(--text-primary);
+  font-family: var(--font-mono);
+  font-weight: 600;
+  box-shadow: var(--shadow-sm);
+  transition: all var(--transition-normal);
   position: relative;
 }
 
 .trie-node-disc.is-root {
-  min-width: 52px;
-  height: 52px;
-  font-size: 0.75rem;
-  border-color: var(--accent-cyan, #5ce1e6);
+  min-width: 50px;
+  height: 50px;
+  font-size: 0.78rem;
+  border-color: var(--border-strong);
+  background: var(--bg-surface-elevated);
 }
 
 .trie-node-disc.is-char {
-  min-width: 44px;
-  height: 44px;
-  font-size: 1.1rem;
+  min-width: 42px;
+  height: 42px;
+  font-size: 1.05rem;
 }
 
 .trie-node-disc.is-active {
-  background: linear-gradient(135deg, rgba(92, 225, 230, 0.25), #121824);
-  border-color: var(--accent-cyan, #5ce1e6);
-  color: #ffffff;
-  box-shadow: 0 0 18px rgba(92, 225, 230, 0.45);
+  background: var(--bg-surface);
+  border-color: var(--accent-terracotta);
+  color: var(--accent-terracotta);
+  box-shadow: 0 0 0 2px var(--accent-terracotta), var(--shadow-sm);
   transform: scale(1.08);
 }
 
 .trie-node-disc.is-end-word {
-  border-color: var(--accent-emerald, #3dd99e);
-  box-shadow: 0 0 14px rgba(61, 217, 158, 0.3);
+  border-color: var(--accent-emerald);
+  box-shadow: 0 0 0 1px var(--accent-emerald), var(--shadow-sm);
 }
 
 .trie-end-word-tag {
-  font-size: 0.58rem;
-  font-family: var(--font-mono, monospace);
-  font-weight: 700;
-  color: var(--accent-emerald, #3dd99e);
+  font-size: 0.62rem;
+  font-family: var(--font-sans);
+  font-weight: 600;
+  color: var(--accent-emerald);
   margin-top: 3px;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.02em;
 }
 
 .trie-branch-system {
@@ -133,16 +133,16 @@
 }
 
 .trie-stem-vertical {
-  width: 2px;
+  width: 1.5px;
   height: 16px;
-  background: var(--border-strong, #27344c);
+  background: var(--border-medium);
 }
 
 .trie-children-row {
   display: flex;
   align-items: flex-start;
   justify-content: center;
-  gap: 10px;
-  border-top: 1.5px solid var(--border-strong, #27344c);
+  gap: 12px;
+  border-top: 1.5px solid var(--border-medium);
   padding-top: 6px;
 }

@@ -19,28 +19,50 @@ export const CodeViewer: React.FC<CodeViewerProps> = ({
   const activeCode = selectedLang === 'c' ? sourceCode.c : sourceCode.typescript;
   const lines = activeCode.split('\n');
 
-  // Simple, safe syntax token highlighter
+  // Safe syntax token highlighter with full-line & inline comment support
   const renderHighlightedCode = (text: string) => {
     if (!text.trim()) return <span>&nbsp;</span>;
 
-    // Check for comment
+    // Check for full-line comment
     if (text.trim().startsWith('//')) {
       return <span className="syntax-comment">{text}</span>;
     }
 
-    // Tokenizer regex for C / TS keywords, numbers, types
-    const parts = text.split(/(\b(?:int|void|return|if|else|while|for|struct|typedef|bool|true|false|NULL|malloc|free|sizeof|#define|class|private|public|new|function|let|const|var|number|string)\b|\d+|"[^"]*")/g);
+    // Check for inline comment outside double quotes
+    let codePart = text;
+    let commentPart = '';
+    const commentIdx = text.indexOf('//');
+    if (commentIdx !== -1) {
+      const beforeComment = text.slice(0, commentIdx);
+      const quoteCount = (beforeComment.match(/"/g) || []).length;
+      if (quoteCount % 2 === 0) {
+        codePart = beforeComment;
+        commentPart = text.slice(commentIdx);
+      }
+    }
+
+    // Tokenizer regex for C / TS keywords, preprocessor, built-ins, numbers, strings
+    const parts = codePart.split(
+      /(\b(?:int|void|return|if|else|while|for|struct|typedef|bool|true|false|NULL|malloc|free|sizeof|#define|#include|class|private|public|new|function|let|const|var|number|string|printf|console)\b|\d+|"[^"]*"|<[^>]+>)/g
+    );
 
     return (
       <span>
         {parts.map((part, i) => {
           if (
-            /^(?:int|void|return|if|else|while|for|struct|typedef|bool|true|false|NULL|malloc|free|sizeof|#define|class|private|public|new|function|let|const|var|number|string)$/.test(
+            /^(?:int|void|return|if|else|while|for|struct|typedef|bool|true|false|NULL|malloc|free|sizeof|#define|#include|class|private|public|new|function|let|const|var|number|string)$/.test(
               part
             )
           ) {
             return (
               <span key={i} className="syntax-keyword">
+                {part}
+              </span>
+            );
+          }
+          if (/^(?:printf|console)$/.test(part)) {
+            return (
+              <span key={i} className="syntax-keyword" style={{ fontWeight: 600 }}>
                 {part}
               </span>
             );
@@ -52,7 +74,7 @@ export const CodeViewer: React.FC<CodeViewerProps> = ({
               </span>
             );
           }
-          if (part.startsWith('"')) {
+          if (part.startsWith('"') || (part.startsWith('<') && part.endsWith('>'))) {
             return (
               <span key={i} className="syntax-string">
                 {part}
@@ -61,6 +83,7 @@ export const CodeViewer: React.FC<CodeViewerProps> = ({
           }
           return <span key={i}>{part}</span>;
         })}
+        {commentPart && <span className="syntax-comment">{commentPart}</span>}
       </span>
     );
   };
@@ -69,9 +92,11 @@ export const CodeViewer: React.FC<CodeViewerProps> = ({
     <div className="editor-console">
       {/* Editor Top Bar */}
       <div className="editor-header">
-        <div className="editor-tabs">
+        <div className="editor-tabs" role="tablist" aria-label="Programming language selector">
           <button
             type="button"
+            role="tab"
+            aria-selected={selectedLang === 'c'}
             className={`editor-tab-btn ${selectedLang === 'c' ? 'is-active' : ''}`}
             onClick={() => setSelectedLang('c')}
           >
@@ -80,6 +105,8 @@ export const CodeViewer: React.FC<CodeViewerProps> = ({
           </button>
           <button
             type="button"
+            role="tab"
+            aria-selected={selectedLang === 'typescript'}
             className={`editor-tab-btn ${selectedLang === 'typescript' ? 'is-active' : ''}`}
             onClick={() => setSelectedLang('typescript')}
           >

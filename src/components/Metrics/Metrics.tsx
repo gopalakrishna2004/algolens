@@ -25,26 +25,26 @@ export const Metrics: React.FC<MetricsProps> = ({
   swaps,
   isCompleted,
 }) => {
-  let statusText = 'IDLE';
+  let statusText = 'Idle';
   let statusType = 'status-idle';
 
   if (category === 'sorting') {
     if (isCompleted) {
-      statusText = 'SORTED ✓';
+      statusText = 'Sorted';
       statusType = 'status-found';
     } else {
-      statusText = 'SORTING';
+      statusText = 'Sorting…';
       statusType = 'status-active';
     }
   } else {
     if (isFound) {
-      statusText = `MATCH AT [${foundIndex}]`;
+      statusText = `Match at index ${foundIndex}`;
       statusType = 'status-found';
     } else if (isCompleted) {
-      statusText = 'NOT FOUND';
+      statusText = 'Target not found';
       statusType = 'status-not-found';
     } else if (currentIndex !== undefined || pointers?.mid !== undefined) {
-      statusText = 'COMPARING';
+      statusText = 'Comparing…';
       statusType = 'status-active';
     }
   }
@@ -58,7 +58,7 @@ export const Metrics: React.FC<MetricsProps> = ({
       {/* Target Spec */}
       {category === 'searching' && target !== undefined && (
         <div className="telemetry-node">
-          <span className="telemetry-kicker">TARGET</span>
+          <span className="telemetry-kicker">Target</span>
           <span className="telemetry-val text-accent">{target}</span>
         </div>
       )}
@@ -68,13 +68,13 @@ export const Metrics: React.FC<MetricsProps> = ({
         <>
           <div className="telemetry-divider" />
           <div className="telemetry-node">
-            <span className="telemetry-kicker">L / MID / R</span>
+            <span className="telemetry-kicker">Pointers (L · Mid · R)</span>
             <span className="telemetry-val">
-              <span style={{ color: '#38bdf8' }}>{pointers?.left ?? '—'}</span>
-              <span className="telemetry-sub-divider">/</span>
-              <span style={{ color: '#fbbf24' }}>{pointers?.mid ?? '—'}</span>
-              <span className="telemetry-sub-divider">/</span>
-              <span style={{ color: '#c084fc' }}>{pointers?.right ?? '—'}</span>
+              <span style={{ color: 'var(--accent-cyan, #0369a1)' }}>{pointers?.left ?? '—'}</span>
+              <span className="telemetry-sub-divider">·</span>
+              <span style={{ color: 'var(--accent-amber, #b45309)' }}>{pointers?.mid ?? '—'}</span>
+              <span className="telemetry-sub-divider">·</span>
+              <span style={{ color: 'var(--accent-violet, #4338ca)' }}>{pointers?.right ?? '—'}</span>
             </span>
           </div>
         </>
@@ -83,7 +83,7 @@ export const Metrics: React.FC<MetricsProps> = ({
           <>
             <div className="telemetry-divider" />
             <div className="telemetry-node">
-              <span className="telemetry-kicker">INDEX</span>
+              <span className="telemetry-kicker">Index</span>
               <span className="telemetry-val">[{currentIndex}]</span>
             </div>
           </>
@@ -93,7 +93,7 @@ export const Metrics: React.FC<MetricsProps> = ({
       {/* Comparisons */}
       <div className="telemetry-divider" />
       <div className="telemetry-node">
-        <span className="telemetry-kicker">COMPARISONS</span>
+        <span className="telemetry-kicker">Comparisons</span>
         <span className="telemetry-val">{comparisons}</span>
       </div>
 
@@ -102,7 +102,7 @@ export const Metrics: React.FC<MetricsProps> = ({
         <>
           <div className="telemetry-divider" />
           <div className="telemetry-node">
-            <span className="telemetry-kicker">SWAPS / SHIFTS</span>
+            <span className="telemetry-kicker">Swaps &amp; Shifts</span>
             <span className="telemetry-val text-coral">{swaps}</span>
           </div>
         </>
@@ -111,7 +111,7 @@ export const Metrics: React.FC<MetricsProps> = ({
       {/* Status */}
       <div className="telemetry-divider" />
       <div className="telemetry-node">
-        <span className="telemetry-kicker">STATUS</span>
+        <span className="telemetry-kicker">Status</span>
         <span className={`telemetry-val ${statusType}`}>{statusText}</span>
       </div>
     </div>

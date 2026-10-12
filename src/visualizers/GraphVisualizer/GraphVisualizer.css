@@ -1,3 +1,7 @@
+/* ==========================================================================
+   AlgoLens — Graph Visualizer: Editorial Art Direction
+   ========================================================================== */
+
 .graph-stage {
   display: flex;
   flex-direction: column;
@@ -7,6 +11,13 @@
   width: 100%;
   min-height: 440px;
   position: relative;
+  background: var(--bg-surface);
+}
+
+.instrument-canvas-viewport .graph-stage,
+.aperture-canvas-floor .graph-stage {
+  background: transparent;
+  padding: 16px 12px;
 }
 
 .graph-telemetry-strip {
@@ -20,15 +31,13 @@
 
 .graph-op-tag {
   padding: 5px 14px;
-  border-radius: 6px;
-  background: rgba(236, 72, 153, 0.08);
-  border: 1px solid rgba(236, 72, 153, 0.25);
-  color: #f472b6;
+  border-radius: var(--radius-pill);
+  background: var(--tint-terracotta-bg);
+  border: 1px solid var(--tint-terracotta-border);
+  color: var(--tint-terracotta-text);
   font-size: 0.78rem;
   font-weight: 600;
-  font-family: var(--font-mono, monospace);
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
+  font-family: var(--font-sans);
   display: flex;
   align-items: center;
   gap: 6px;
@@ -39,48 +48,50 @@
   width: 6px;
   height: 6px;
   border-radius: 50%;
-  background: #f472b6;
-  box-shadow: 0 0 8px #f472b6;
+  background: var(--accent-terracotta);
 }
 
 .graph-aux-collection {
-  padding: 5px 12px;
-  border-radius: 6px;
-  background: var(--bg-surface, #0c1018);
-  border: 1px solid var(--border-subtle, #1a2233);
-  font-size: 0.75rem;
-  font-family: var(--font-mono, monospace);
-  color: var(--text-secondary, #94a3b8);
+  padding: 5px 14px;
+  border-radius: var(--radius-pill);
+  background: var(--bg-surface-elevated);
+  border: 1px solid var(--border-medium);
+  font-size: 0.76rem;
+  font-family: var(--font-sans);
+  color: var(--text-secondary);
   display: flex;
-  gap: 6px;
+  gap: 8px;
   align-items: center;
 }
 
 .graph-aux-pill {
-  background: rgba(92, 225, 230, 0.15);
-  border: 1px solid var(--accent-cyan, #5ce1e6);
-  color: var(--accent-cyan, #5ce1e6);
-  padding: 1px 6px;
-  border-radius: 4px;
-  font-weight: 700;
-  font-size: 0.72rem;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-medium);
+  color: var(--text-primary);
+  padding: 1px 7px;
+  border-radius: var(--radius-pill);
+  font-weight: 600;
+  font-size: 0.74rem;
+  font-family: var(--font-mono);
+  box-shadow: var(--shadow-sm);
 }
 
 .graph-visited-summary {
-  padding: 5px 12px;
-  border-radius: 6px;
-  background: var(--bg-surface, #0c1018);
-  border: 1px solid var(--border-subtle, #1a2233);
-  font-size: 0.75rem;
-  font-family: var(--font-mono, monospace);
-  color: var(--text-secondary, #94a3b8);
+  padding: 5px 14px;
+  border-radius: var(--radius-pill);
+  background: var(--tint-emerald-bg);
+  border: 1px solid var(--tint-emerald-border);
+  font-size: 0.76rem;
+  font-family: var(--font-sans);
+  color: var(--tint-emerald-text);
   display: flex;
   gap: 6px;
   align-items: center;
 }
 
 .graph-visited-summary strong {
-  color: var(--accent-emerald, #3dd99e);
+  color: var(--accent-emerald);
+  font-family: var(--font-mono);
 }
 
 /* Wide Responsive SVG Viewport */
@@ -89,30 +100,14 @@
   max-width: 880px;
   height: 350px;
   position: relative;
-  background: linear-gradient(180deg, rgba(12, 16, 24, 0.8) 0%, rgba(18, 24, 36, 0.9) 100%);
-  border-radius: 14px;
-  border: 1.5px solid var(--border-strong, #27344c);
-  box-shadow: inset 0 0 24px rgba(0, 0, 0, 0.6), 0 8px 24px rgba(0, 0, 0, 0.4);
+  background: var(--bg-surface);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border-medium);
+  box-shadow: var(--shadow-sm);
   overflow: hidden;
 }
 
 .graph-svg-canvas {
   width: 100%;
   height: 100%;
-  overflow: visible;
-}
-
-.graph-stat-footer {
-  margin-top: 18px;
-  padding: 6px 14px;
-  border-radius: 6px;
-  background: rgba(61, 217, 158, 0.08);
-  border: 1px solid rgba(61, 217, 158, 0.25);
-  color: var(--accent-emerald, #3dd99e);
-  font-size: 0.82rem;
-  font-family: var(--font-mono, monospace);
-  font-weight: 600;
-  display: flex;
-  align-items: center;
-  gap: 6px;
 }

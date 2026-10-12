@@ -1,5 +1,6 @@
 import React from 'react';
 import type { LearningMode } from '../../learning/types';
+import { ThemeToggle } from './ThemeToggle';
 import './InstrumentNavbar.css';
 
 interface InstrumentNavbarProps {
@@ -15,6 +16,7 @@ interface InstrumentNavbarProps {
   totalAlgorithms: number;
   challengeStreak: number;
   onOpenShortcutsModal?: () => void;
+  onOpenMasteryModal?: () => void;
 }
 
 export const InstrumentNavbar: React.FC<InstrumentNavbarProps> = ({
@@ -30,6 +32,7 @@ export const InstrumentNavbar: React.FC<InstrumentNavbarProps> = ({
   totalAlgorithms,
   challengeStreak,
   onOpenShortcutsModal,
+  onOpenMasteryModal,
 }) => {
   return (
     <header className="instrument-navbar" role="banner">
@@ -50,8 +53,8 @@ export const InstrumentNavbar: React.FC<InstrumentNavbarProps> = ({
 
         <div className="nav-brand-lockup">
           <span className="brand-dot" />
-          <span className="brand-label">ALGOLENS</span>
-          <span className="brand-sub">LAB</span>
+          <span className="brand-label">AlgoLens</span>
+          <span className="brand-sub">Laboratory</span>
         </div>
 
         {/* Curriculum Command Selector Trigger */}
@@ -63,7 +66,7 @@ export const InstrumentNavbar: React.FC<InstrumentNavbarProps> = ({
           aria-label="Toggle Curriculum Explorer"
           title="Browse all 32 algorithms across 6 chapters (Hotkey: C or Cmd+K)"
         >
-          <span className="trigger-chapter-badge">CH {chapterNumber} • {categoryName.toUpperCase()}</span>
+          <span className="trigger-chapter-badge">Chapter {chapterNumber} · {categoryName}</span>
           <span className="trigger-algo-name">{activeAlgorithmName}</span>
           <span className="trigger-arrow" aria-hidden="true">▾</span>
           <kbd className="trigger-kbd">C</kbd>
@@ -81,7 +84,10 @@ export const InstrumentNavbar: React.FC<InstrumentNavbarProps> = ({
             onClick={() => onModeChange('explore')}
             title="Explore Mode: Self-paced temporal stepping and free inspection"
           >
-            <span className="mode-tab-icon" aria-hidden="true">🔭</span>
+            <svg className="mode-tab-svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+              <circle cx="11" cy="11" r="8" />
+              <line x1="21" y1="21" x2="16.65" y2="16.65" />
+            </svg>
             <span className="mode-tab-text">Explore</span>
           </button>
 
@@ -93,7 +99,9 @@ export const InstrumentNavbar: React.FC<InstrumentNavbarProps> = ({
             onClick={() => onModeChange('guided')}
             title="Guided Mode: Pedagogical stops at algorithmic invariant boundaries"
           >
-            <span className="mode-tab-icon" aria-hidden="true">🧭</span>
+            <svg className="mode-tab-svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+              <polygon points="12 2 19 21 12 17 5 21 12 2" />
+            </svg>
             <span className="mode-tab-text">Guided</span>
           </button>
 
@@ -105,10 +113,13 @@ export const InstrumentNavbar: React.FC<InstrumentNavbarProps> = ({
             onClick={() => onModeChange('challenge')}
             title="Challenge Mode: Predict execution transitions with streak tracking"
           >
-            <span className="mode-tab-icon" aria-hidden="true">🎯</span>
+            <svg className="mode-tab-svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+              <circle cx="12" cy="12" r="10" />
+              <circle cx="12" cy="12" r="3" />
+            </svg>
             <span className="mode-tab-text">Challenge</span>
             {challengeStreak > 0 && (
-              <span className="mode-streak-badge">⚡{challengeStreak}</span>
+              <span className="mode-streak-badge">+{challengeStreak}</span>
             )}
           </button>
         </div>
@@ -116,12 +127,20 @@ export const InstrumentNavbar: React.FC<InstrumentNavbarProps> = ({
 
       {/* Right: Progress Telemetry & Keyboard Helper */}
       <div className="navbar-right">
-        <div className="nav-progress-capsule" title={`${completedCount} of ${totalAlgorithms} algorithms mastered`}>
-          <span className="capsule-label">MASTERED</span>
+        <ThemeToggle />
+
+        <button
+          type="button"
+          className="nav-progress-capsule"
+          onClick={onOpenMasteryModal}
+          title={`${completedCount} of ${totalAlgorithms} algorithms mastered. Click to open Mastery Assessment.`}
+          aria-label={`Mastery Progress: ${completedCount} of ${totalAlgorithms} algorithms mastered. Click to open Mastery Assessment.`}
+        >
+          <span className="capsule-label">Mastered</span>
           <span className="capsule-count">
             <strong>{completedCount}</strong>/{totalAlgorithms}
           </span>
-        </div>
+        </button>
 
         {onOpenShortcutsModal && (
           <button

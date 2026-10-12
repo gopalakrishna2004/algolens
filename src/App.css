@@ -1,10 +1,13 @@
-/* AlgoLens 2.0 Unified Laboratory Layout */
+/* ==========================================================================
+   AlgoLens — Laboratory Workbench: Editorial Art Direction
+   ========================================================================== */
+
 .app-layout {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
   width: 100%;
-  background-color: var(--bg-canvas, #07090e);
+  background-color: var(--bg-canvas, #fbf9f4);
 }
 
 .app-layout.sidebar-pinned-layout {
@@ -23,10 +26,10 @@
   flex: 1;
   max-width: 1360px;
   margin: 0 auto;
-  padding: 24px 32px 64px;
+  padding: 20px 28px 48px;
   display: flex;
   flex-direction: column;
-  gap: 24px;
+  gap: 20px;
   width: 100%;
 }
 
@@ -35,84 +38,87 @@
   width: 100%;
   display: flex;
   flex-direction: column;
-  background: var(--bg-surface, #0c1018);
-  border: 1.5px solid var(--border-medium, #1f2738);
+  background: var(--bg-surface, #ffffff);
+  border: 1px solid var(--border-medium, rgba(24, 23, 21, 0.15));
   border-radius: var(--radius-lg, 14px);
-  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.55);
+  box-shadow: var(--shadow-md);
   overflow: hidden;
-  transition: border-color var(--transition-fast);
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
 }
 
 .lab-instrument-console:hover {
-  border-color: var(--border-strong, #2a354c);
+  border-color: var(--border-strong, rgba(24, 23, 21, 0.28));
 }
 
 /* Console Crown: Title, Chapter Eyebrow & Complexity Plaque */
 .instrument-crown {
-  padding: 24px 28px 20px;
-  background: linear-gradient(180deg, rgba(18, 24, 36, 0.6) 0%, rgba(12, 16, 24, 0.9) 100%);
-  border-bottom: 1px solid var(--border-subtle, rgba(255, 255, 255, 0.06));
+  padding: 18px 26px 16px;
+  background: var(--bg-surface-elevated, #f4efe4);
+  border-bottom: 1px solid var(--border-subtle, rgba(24, 23, 21, 0.08));
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
-  gap: 24px;
+  gap: 20px;
   flex-wrap: wrap;
 }
 
 .crown-title-group {
   display: flex;
   flex-direction: column;
-  gap: 8px;
-  max-width: 680px;
+  gap: 6px;
+  max-width: 720px;
 }
 
 .chapter-eyebrow {
   display: flex;
   align-items: center;
   gap: 8px;
-  font-family: var(--font-mono, monospace);
-  font-size: 0.68rem;
-  font-weight: 800;
-  letter-spacing: 0.12em;
+  font-family: var(--font-sans, sans-serif);
+  font-size: 0.76rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
 }
 
 .eyebrow-chapter {
-  color: var(--accent-cyan, #5ce1e6);
+  color: var(--accent-terracotta, #c2410c);
 }
 
 .eyebrow-sep {
-  color: var(--border-strong, #27344c);
+  color: var(--border-medium, rgba(24, 23, 21, 0.15));
 }
 
 .eyebrow-category {
-  color: var(--text-muted, #64748b);
+  color: var(--text-muted, #78716c);
 }
 
 .eyebrow-difficulty {
-  font-size: 0.65rem;
-  padding: 2px 7px;
-  border-radius: 4px;
-  background: var(--bg-surface-elevated, #121824);
-  border: 1px solid var(--border-medium, #1f2738);
-  color: var(--text-secondary, #94a3b8);
+  font-size: 0.7rem;
+  font-weight: 600;
+  padding: 1px 7px;
+  border-radius: var(--radius-pill, 9999px);
+  background: var(--bg-surface, #ffffff);
+  border: 1px solid var(--border-medium, rgba(24, 23, 21, 0.15));
+  color: var(--text-secondary, #44403c);
   margin-left: 4px;
+  text-transform: capitalize;
 }
 
 .instrument-title {
-  font-family: var(--font-display, 'Space Grotesk', sans-serif);
-  font-size: clamp(2rem, 3.2vw, 2.6rem);
-  font-weight: 800;
-  letter-spacing: -0.03em;
-  color: var(--text-primary, #f8fafc);
+  font-family: var(--font-display, serif);
+  font-size: clamp(1.8rem, 2.5vw, 2.4rem);
+  font-weight: 600;
+  letter-spacing: -0.025em;
+  color: var(--text-primary, #181715);
   line-height: 1.1;
   margin: 0;
 }
 
 .instrument-thesis {
-  font-size: 0.95rem;
+  font-family: var(--font-sans, sans-serif);
+  font-size: 0.94rem;
   font-weight: 400;
-  color: #cbd5e1;
-  line-height: 1.5;
+  color: var(--text-secondary, #44403c);
+  line-height: 1.45;
   margin: 0;
 }
 
@@ -120,12 +126,12 @@
 .complexity-plaque {
   display: flex;
   align-items: center;
-  gap: 14px;
-  background: var(--bg-surface-elevated, #121824);
-  border: 1px solid var(--border-medium, #1f2738);
-  border-radius: var(--radius-sm, 6px);
-  padding: 8px 14px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  gap: 12px;
+  background: var(--bg-surface, #ffffff);
+  border: 1px solid var(--border-medium, rgba(24, 23, 21, 0.15));
+  border-radius: var(--radius-md, 8px);
+  padding: 6px 14px;
+  box-shadow: var(--shadow-sm);
   align-self: flex-start;
   flex-wrap: wrap;
 }
@@ -137,25 +143,25 @@
 }
 
 .plaque-lbl {
-  font-family: var(--font-mono, monospace);
-  font-size: 0.6rem;
-  font-weight: 800;
-  letter-spacing: 0.1em;
-  color: var(--text-muted, #64748b);
+  font-family: var(--font-sans, sans-serif);
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  color: var(--text-muted, #78716c);
 }
 
 .plaque-val {
   font-family: var(--font-mono, monospace);
   font-size: 0.82rem;
-  font-weight: 700;
-  color: var(--accent-cyan, #5ce1e6);
+  font-weight: 600;
+  color: var(--text-primary, #181715);
   white-space: nowrap;
 }
 
 .plaque-divider {
   width: 1px;
-  height: 20px;
-  background: var(--border-medium, #1f2738);
+  height: 18px;
+  background: var(--border-subtle, rgba(24, 23, 21, 0.08));
 }
 
 /* Requirement Notice Banner */
@@ -163,55 +169,57 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 10px 20px;
-  background: rgba(245, 181, 68, 0.1);
-  border-bottom: 1px solid rgba(245, 181, 68, 0.25);
-  font-size: 0.85rem;
-  color: #fef08a;
-  gap: 12px;
+  padding: 12px 24px;
+  background: var(--tint-amber-bg);
+  border-bottom: 1px solid var(--tint-amber-border);
+  font-family: var(--font-sans, sans-serif);
+  font-size: 0.88rem;
+  color: var(--tint-amber-text);
+  gap: 14px;
 }
 
 .req-btn {
-  background: var(--accent-amber, #f5b544);
-  color: #090d16;
+  background: var(--accent-amber);
+  color: #ffffff;
   border: none;
-  border-radius: var(--radius-xs, 4px);
-  padding: 5px 14px;
-  font-family: var(--font-mono, monospace);
-  font-weight: 700;
-  font-size: 0.78rem;
+  border-radius: var(--radius-pill, 9999px);
+  padding: 6px 16px;
+  font-family: var(--font-sans, sans-serif);
+  font-weight: 600;
+  font-size: 0.82rem;
   cursor: pointer;
   transition: all var(--transition-fast);
 }
 
 .req-btn:hover {
-  background: #fbbf24;
+  opacity: 0.9;
 }
 
 /* Embedded Teaching & Challenge HUD Area */
 .instrument-hud-area {
-  padding: 16px 24px;
-  background: rgba(18, 24, 36, 0.4);
-  border-bottom: 1px solid var(--border-subtle, rgba(255, 255, 255, 0.06));
+  padding: 12px 24px;
+  background: var(--bg-surface, #ffffff);
+  border-bottom: 1px solid var(--border-subtle, rgba(24, 23, 21, 0.08));
 }
 
 /* Living Visualization Canvas Viewport */
 .instrument-canvas-viewport {
   width: 100%;
-  min-height: 400px;
+  min-height: clamp(340px, 44vh, 400px);
   display: flex;
   align-items: center;
   justify-content: center;
-  background: radial-gradient(circle at center, rgba(18, 24, 36, 0.4) 0%, rgba(7, 9, 14, 0.8) 100%);
+  background: var(--bg-surface, #ffffff);
   position: relative;
+  padding: 16px 20px;
 }
 
 /* Base Telemetry & Controls Deck */
 .instrument-base-deck {
   display: flex;
   flex-direction: column;
-  background: var(--bg-surface-elevated, #121824);
-  border-top: 1px solid var(--border-medium, #1f2738);
+  background: var(--bg-surface-elevated, #f4efe4);
+  border-top: 1px solid var(--border-medium, rgba(24, 23, 21, 0.15));
 }
 
 /* Secondary Deep Study Section */
@@ -221,20 +229,20 @@
 
 @media (max-width: 900px) {
   .main-stage {
-    padding: 16px 14px 48px;
-    gap: 16px;
+    padding: 20px 16px 56px;
+    gap: 20px;
   }
   .instrument-crown {
-    padding: 18px 16px;
+    padding: 20px 18px;
   }
   .instrument-title {
-    font-size: 1.85rem;
+    font-size: 2rem;
   }
   .complexity-plaque {
     width: 100%;
     justify-content: space-between;
   }
   .instrument-hud-area {
-    padding: 12px 14px;
+    padding: 14px 16px;
   }
 }

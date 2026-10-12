@@ -24,12 +24,6 @@ export const ArrayVisualizer: React.FC<ArrayVisualizerProps> = ({
 
   return (
     <section className="array-stage" aria-label="Array Visualization Canvas">
-      {/* Precision Stage Corner Registration Marks */}
-      <span className="stage-crosshair ch-tl" aria-hidden="true">+</span>
-      <span className="stage-crosshair ch-tr" aria-hidden="true">+</span>
-      <span className="stage-crosshair ch-bl" aria-hidden="true">+</span>
-      <span className="stage-crosshair ch-br" aria-hidden="true">+</span>
-
       {/* Array Elements Workspace Track */}
       <div className="array-track" role="list">
         {array.map((value, idx) => {
@@ -40,15 +34,15 @@ export const ArrayVisualizer: React.FC<ArrayVisualizerProps> = ({
           let primaryType = 'current';
 
           if (pointers?.left === idx) {
-            labels.push('LEFT');
+            labels.push('Left');
             primaryType = 'left';
           }
           if (pointers?.mid === idx) {
-            labels.push('MID');
+            labels.push('Mid');
             primaryType = 'mid';
           }
           if (pointers?.right === idx) {
-            labels.push('RIGHT');
+            labels.push('Right');
             primaryType = primaryType === 'current' ? 'right' : primaryType;
           }
           if (pointers) {
@@ -57,7 +51,7 @@ export const ArrayVisualizer: React.FC<ArrayVisualizerProps> = ({
                 val === idx &&
                 !['left', 'mid', 'right', 'current'].includes(key)
               ) {
-                labels.push(key.toUpperCase());
+                labels.push(key);
               }
             }
           }
@@ -66,7 +60,7 @@ export const ArrayVisualizer: React.FC<ArrayVisualizerProps> = ({
             ((pointers?.current === idx && pointers?.mid === undefined) ||
               currentIndex === idx)
           ) {
-            labels.push('CURRENT');
+            labels.push('Current');
             primaryType = 'current';
           }
 
