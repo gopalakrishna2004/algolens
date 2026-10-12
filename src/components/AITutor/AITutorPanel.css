@@ -1,11 +1,15 @@
+/* ==========================================================================
+   AlgoLens — AI Tutor Panel: Editorial Art Direction
+   ========================================================================== */
+
 .laboratory-assistant {
   background: var(--bg-surface);
   border: 1px solid var(--border-medium);
-  border-radius: var(--radius-md);
-  padding: 16px 18px;
+  border-radius: var(--radius-lg);
+  padding: 20px 24px;
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 16px;
   box-shadow: var(--shadow-sm);
   width: 100%;
 }
@@ -15,7 +19,7 @@
   align-items: center;
   justify-content: space-between;
   flex-wrap: wrap;
-  gap: 8px;
+  gap: 10px;
   user-select: none;
 }
 
@@ -27,48 +31,49 @@
 }
 
 .assistant-badge {
-  font-family: var(--font-mono);
-  font-size: 0.68rem;
-  font-weight: 800;
-  letter-spacing: 0.08em;
-  color: var(--accent-cyan);
-  background: rgba(103, 214, 232, 0.1);
-  border: 1px solid rgba(103, 214, 232, 0.25);
-  padding: 3px 8px;
-  border-radius: var(--radius-xs);
+  font-family: var(--font-sans);
+  font-size: 0.74rem;
+  font-weight: 700;
+  color: var(--tint-amber-text);
+  background: var(--tint-amber-bg);
+  border: 1px solid var(--tint-amber-border);
+  padding: 3px 10px;
+  border-radius: var(--radius-pill);
 }
 
 .assistant-context-tag {
-  font-size: 0.8rem;
+  font-family: var(--font-sans);
+  font-size: 0.82rem;
   color: var(--text-muted);
 }
 
 .assistant-engine-tag {
   font-family: var(--font-mono);
-  font-size: 0.65rem;
-  color: var(--text-faint);
-  background: rgba(255, 255, 255, 0.03);
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  background: var(--bg-surface-elevated);
   border: 1px solid var(--border-subtle);
-  padding: 2px 6px;
+  padding: 2px 7px;
   border-radius: var(--radius-xs);
 }
 
 .assistant-toggle-btn {
   background: transparent;
-  border: 1px solid var(--border-subtle);
-  color: var(--text-muted);
-  font-size: 0.74rem;
+  border: 1px solid var(--border-medium);
+  color: var(--text-secondary);
+  font-family: var(--font-sans);
+  font-size: 0.78rem;
   font-weight: 600;
-  padding: 4px 10px;
-  border-radius: var(--radius-xs);
+  padding: 4px 12px;
+  border-radius: var(--radius-pill);
   cursor: pointer;
   transition: all var(--transition-fast);
 }
 
 .assistant-toggle-btn:hover {
   color: var(--text-primary);
-  border-color: var(--border-medium);
-  background: var(--bg-surface-hover);
+  border-color: var(--border-strong);
+  background: var(--bg-surface-elevated);
 }
 
 .assistant-chip-tray {
@@ -81,88 +86,97 @@
   background: var(--bg-surface-elevated);
   border: 1px solid var(--border-medium);
   color: var(--text-secondary);
-  font-size: 0.76rem;
+  font-family: var(--font-sans);
+  font-size: 0.8rem;
   font-weight: 600;
-  padding: 5px 12px;
-  border-radius: var(--radius-xs);
+  padding: 6px 14px;
+  border-radius: var(--radius-pill);
   cursor: pointer;
   transition: all var(--transition-fast);
 }
 
 .action-chip:hover {
-  background: var(--bg-surface-hover);
-  color: var(--text-primary);
-  border-color: var(--border-accent);
+  background: var(--bg-surface);
+  color: var(--accent-terracotta);
+  border-color: var(--accent-terracotta);
   transform: translateY(-1px);
 }
 
 .action-chip.highlight-chip {
-  border-color: rgba(245, 181, 68, 0.4);
-  color: var(--accent-amber);
-  background: rgba(245, 181, 68, 0.08);
+  border-color: var(--tint-amber-border);
+  color: var(--tint-amber-text);
+  background: var(--tint-amber-bg);
 }
 
 .action-chip.highlight-chip:hover {
   border-color: var(--accent-amber);
-  background: rgba(245, 181, 68, 0.15);
+  background: var(--tint-amber-border);
 }
 
 .assistant-console-body {
   display: flex;
   flex-direction: column;
-  gap: 12px;
-  padding-top: 10px;
+  gap: 14px;
+  padding-top: 14px;
   border-top: 1px solid var(--border-subtle);
 }
 
 .assistant-response-display {
-  background: var(--bg-canvas);
+  background: var(--bg-surface-elevated);
   border: 1px solid var(--border-medium);
-  border-radius: var(--radius-sm);
-  padding: 14px 16px;
-  color: #e2e8f0;
-  font-size: 0.86rem;
-  line-height: 1.6;
+  border-radius: var(--radius-md);
+  padding: 16px 20px;
+  color: var(--text-primary);
+  font-family: var(--font-sans);
+  font-size: 0.92rem;
+  line-height: 1.65;
   white-space: pre-wrap;
-  box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.3);
 }
 
 .assistant-input-form {
   display: flex;
-  gap: 8px;
+  gap: 10px;
 }
 
 .assistant-text-input {
   flex: 1;
-  background: var(--bg-canvas);
+  background: var(--bg-surface);
   border: 1px solid var(--border-medium);
-  border-radius: var(--radius-xs);
-  padding: 8px 12px;
+  border-radius: var(--radius-pill);
+  padding: 9px 16px;
   color: var(--text-primary);
-  font-size: 0.84rem;
+  font-family: var(--font-sans);
+  font-size: 0.86rem;
   outline: none;
   transition: border-color var(--transition-fast);
 }
 
 .assistant-text-input:focus {
-  border-color: var(--accent-cyan);
-  box-shadow: 0 0 0 2px rgba(103, 214, 232, 0.15);
+  border-color: var(--accent-terracotta);
+  box-shadow: 0 0 0 2px var(--accent-glow);
 }
 
 .assistant-send-btn {
-  background: var(--accent-cyan);
-  color: #090d16;
+  background: var(--accent-terracotta);
+  color: #ffffff;
   border: none;
-  border-radius: var(--radius-xs);
-  padding: 0 16px;
-  font-family: var(--font-mono);
-  font-weight: 700;
-  font-size: 0.8rem;
+  border-radius: var(--radius-pill);
+  padding: 0 20px;
+  font-family: var(--font-sans);
+  font-weight: 600;
+  font-size: 0.84rem;
   cursor: pointer;
   transition: all var(--transition-fast);
 }
 
 .assistant-send-btn:hover {
   background: var(--accent-primary-hover);
-  box-shadow: 0 0 8px rgba(103, 214, 232, 0.3);
+}
+
+.assistant-toggle-btn:focus-visible,
+.action-chip:focus-visible,
+.assistant-text-input:focus-visible,
+.assistant-send-btn:focus-visible {
+  outline: 2px solid var(--accent-terracotta, #c2410c);
+  outline-offset: 2px;
 }

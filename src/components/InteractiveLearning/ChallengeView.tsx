@@ -30,7 +30,7 @@ export const ChallengeView: React.FC<ChallengeViewProps> = ({
     return (
       <div className="challenge-idle-banner" role="region" aria-label="Challenge Status">
         <div className="idle-banner-left">
-          <span className="challenge-mode-badge">🎯 CHALLENGE MODE</span>
+          <span className="challenge-mode-badge">Challenge Mode</span>
           <span className="idle-banner-text">
             Step {currentStepIndex + 1} of {totalSteps}: Advance playback to the next decision boundary to test your prediction.
           </span>
@@ -74,7 +74,7 @@ export const ChallengeView: React.FC<ChallengeViewProps> = ({
       {/* Header telemetry */}
       <div className="challenge-console-header">
         <div className="challenge-tag-group">
-          <span className="challenge-mode-badge">🎯 PREDICTION CHALLENGE</span>
+          <span className="challenge-mode-badge">Prediction Challenge</span>
           <span className="challenge-concept-tag">{challenge.concept}</span>
         </div>
         <div className="challenge-meta-right">
@@ -90,7 +90,7 @@ export const ChallengeView: React.FC<ChallengeViewProps> = ({
             title="Exit Challenge Mode"
             aria-label="Exit Challenge Mode"
           >
-            Exit Challenge ✕
+            Exit Challenge
           </button>
         </div>
       </div>
@@ -183,7 +183,7 @@ export const ChallengeView: React.FC<ChallengeViewProps> = ({
               className="challenge-action-btn btn-primary"
               onClick={onContinue}
             >
-              Continue Execution ➔
+              Continue Execution →
             </button>
           </div>
         </div>

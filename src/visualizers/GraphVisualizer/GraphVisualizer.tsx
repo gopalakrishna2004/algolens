@@ -17,12 +17,12 @@ export const GraphVisualizer: React.FC<GraphVisualizerProps> = ({ step }) => {
       {/* Top Banner: Action & Auxiliary Structures */}
       <div className="graph-telemetry-strip">
         <div className="graph-op-tag">
-          OP // {action ? action.toUpperCase() : 'GRAPH STEP'}
+          {action ? action : 'Graph Operation'}
         </div>
 
         {queueOrStack && queueOrStack.length > 0 && (
           <div className="graph-aux-collection">
-            <span>FRONTIER //</span>
+            <span>Frontier:</span>
             <div style={{ display: 'flex', gap: '4px' }}>
               {queueOrStack.map((item, idx) => (
                 <span key={idx} className="graph-aux-pill">
@@ -35,7 +35,7 @@ export const GraphVisualizer: React.FC<GraphVisualizerProps> = ({ step }) => {
 
         {visitedNodes.length > 0 && (
           <div className="graph-visited-summary">
-            <span>VISITED //</span>
+            <span>Visited:</span>
             <strong>[{visitedNodes.join(', ')}]</strong>
           </div>
         )}
@@ -48,18 +48,14 @@ export const GraphVisualizer: React.FC<GraphVisualizerProps> = ({ step }) => {
           className="graph-svg-canvas"
         >
           <defs>
-            {/* Subtle laboratory grid pattern */}
+            {/* Subtle paper dot grid */}
             <pattern id="graph-lab-grid" width="30" height="30" patternUnits="userSpaceOnUse">
-              <circle cx="15" cy="15" r="0.8" fill="rgba(255, 255, 255, 0.12)" />
+              <circle cx="15" cy="15" r="0.8" fill="var(--border-subtle)" />
             </pattern>
-            {/* Glow filter for active/mst edges */}
-            <filter id="edge-glow" x="-20%" y="-20%" width="140%" height="140%">
-              <feGaussianBlur stdDeviation="3" result="blur" />
-              <feComposite in="SourceGraphic" in2="blur" operator="over" />
-            </filter>
           </defs>
 
           {/* Grid background */}
+          <rect width="650" height="320" fill="var(--bg-canvas)" />
           <rect width="650" height="320" fill="url(#graph-lab-grid)" />
 
           {/* Edges */}
@@ -68,21 +64,18 @@ export const GraphVisualizer: React.FC<GraphVisualizerProps> = ({ step }) => {
             const v = nodeMap.get(e.to);
             if (!u || !v || u.x === undefined || u.y === undefined || v.x === undefined || v.y === undefined) return null;
 
-            let stroke = '#27344c';
-            let strokeWidth = 2.5;
+            let stroke = 'var(--border-strong)';
+            let strokeWidth = 2;
             let strokeDasharray = undefined;
-            let filter = undefined;
 
             if (e.state === 'included') {
-              stroke = '#3dd99e';
+              stroke = 'var(--accent-emerald)';
               strokeWidth = 3.5;
-              filter = 'url(#edge-glow)';
             } else if (e.state === 'considering') {
-              stroke = '#f5b544';
+              stroke = 'var(--accent-amber)';
               strokeWidth = 3;
-              filter = 'url(#edge-glow)';
             } else if (e.state === 'discarded') {
-              stroke = '#334155';
+              stroke = 'var(--border-subtle)';
               strokeWidth = 1.5;
               strokeDasharray = '4 4';
             }
@@ -101,7 +94,6 @@ export const GraphVisualizer: React.FC<GraphVisualizerProps> = ({ step }) => {
                   strokeWidth={strokeWidth}
                   strokeDasharray={strokeDasharray}
                   strokeLinecap="round"
-                  filter={filter}
                 />
                 {e.weight !== undefined && (
                   <g>
@@ -110,15 +102,15 @@ export const GraphVisualizer: React.FC<GraphVisualizerProps> = ({ step }) => {
                       y={midY - 10}
                       width={24}
                       height={20}
-                      rx={5}
-                      fill="#0c1018"
-                      stroke={e.state === 'included' ? '#3dd99e' : '#27344c'}
+                      rx={4}
+                      fill="var(--bg-surface)"
+                      stroke={e.state === 'included' ? 'var(--accent-emerald)' : 'var(--border-medium)'}
                       strokeWidth={1.5}
                     />
                     <text
                       x={midX}
                       y={midY + 4}
-                      fill={e.state === 'included' ? '#3dd99e' : '#94a3b8'}
+                      fill={e.state === 'included' ? 'var(--accent-emerald)' : 'var(--text-primary)'}
                       fontSize="11"
                       fontWeight="700"
                       fontFamily="var(--font-mono, monospace)"
@@ -140,26 +132,26 @@ export const GraphVisualizer: React.FC<GraphVisualizerProps> = ({ step }) => {
             const isVisiting = n.state === 'visiting';
             const isVisited = n.state === 'visited';
 
-            let fill = '#121824';
-            let stroke = '#27344c';
+            let fill = 'var(--bg-surface)';
+            let stroke = 'var(--border-strong)';
             let strokeWidth = 2;
-            let textFill = '#f0f4fc';
+            let textFill = 'var(--text-primary)';
 
             if (isCurrent) {
-              fill = '#0a2540';
-              stroke = '#5ce1e6';
+              fill = 'var(--tint-terracotta-bg)';
+              stroke = 'var(--accent-terracotta)';
               strokeWidth = 3;
-              textFill = '#ffffff';
+              textFill = 'var(--tint-terracotta-text)';
             } else if (isVisiting) {
-              fill = '#382510';
-              stroke = '#f5b544';
+              fill = 'var(--tint-amber-bg)';
+              stroke = 'var(--accent-amber)';
               strokeWidth = 2.5;
-              textFill = '#ffffff';
+              textFill = 'var(--tint-amber-text)';
             } else if (isVisited) {
-              fill = '#0d2818';
-              stroke = '#3dd99e';
+              fill = 'var(--tint-emerald-bg)';
+              stroke = 'var(--accent-emerald)';
               strokeWidth = 2.5;
-              textFill = '#ffffff';
+              textFill = 'var(--tint-emerald-text)';
             }
 
             return (
@@ -169,19 +161,19 @@ export const GraphVisualizer: React.FC<GraphVisualizerProps> = ({ step }) => {
                   <circle
                     cx={n.x}
                     cy={n.y}
-                    r={28}
+                    r={32}
                     fill="none"
-                    stroke="#5ce1e6"
+                    stroke="var(--accent-terracotta)"
                     strokeWidth={1.5}
                     strokeDasharray="3 3"
-                    opacity={0.7}
+                    opacity={0.6}
                   />
                 )}
                 {/* Node main beacon */}
                 <circle
                   cx={n.x}
                   cy={n.y}
-                  r={21}
+                  r={24}
                   fill={fill}
                   stroke={stroke}
                   strokeWidth={strokeWidth}
@@ -192,7 +184,7 @@ export const GraphVisualizer: React.FC<GraphVisualizerProps> = ({ step }) => {
                   x={n.x}
                   y={n.y + 5}
                   fill={textFill}
-                  fontSize="13"
+                  fontSize="14"
                   fontWeight="700"
                   fontFamily="var(--font-mono, monospace)"
                   textAnchor="middle"
@@ -206,18 +198,18 @@ export const GraphVisualizer: React.FC<GraphVisualizerProps> = ({ step }) => {
                       x={n.x - 22}
                       y={n.y - 34}
                       width={44}
-                      height={15}
+                      height={16}
                       rx={3}
-                      fill="#0c1018"
-                      stroke="#5ce1e6"
+                      fill="#ffffff"
+                      stroke="#0369a1"
                       strokeWidth={1}
                     />
                     <text
                       x={n.x}
-                      y={n.y - 23}
-                      fill="#5ce1e6"
+                      y={n.y - 22}
+                      fill="#0369a1"
                       fontSize="9"
-                      fontWeight="700"
+                      fontWeight="600"
                       fontFamily="var(--font-mono, monospace)"
                       textAnchor="middle"
                     >
@@ -234,7 +226,7 @@ export const GraphVisualizer: React.FC<GraphVisualizerProps> = ({ step }) => {
       {/* Live Distance or MST Summary */}
       {stats && stats.totalWeight !== undefined && (
         <div className="graph-stat-footer">
-          <span>MST TOTAL WEIGHT //</span>
+          <span>MST Total Weight:</span>
           <strong>{stats.totalWeight}</strong>
         </div>
       )}

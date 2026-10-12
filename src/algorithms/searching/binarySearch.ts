@@ -142,7 +142,7 @@ export function binarySearch(array: number[], target: number): ArrayStep[] {
     pointers: { left, right },
     target,
     isFound: false,
-    codeLine: 4,
+    codeLine: 5,
     description: `Starting Binary Search for target ${target}. Initial search range is [${left}..${right}].`,
     stats: { comparisons: 0, accesses: 0 },
   });
@@ -167,7 +167,7 @@ export function binarySearch(array: number[], target: number): ArrayStep[] {
         pointers: { left, mid, right },
         target,
         isFound: false,
-        codeLine: 8,
+        codeLine: 7,
         description: `Calculated middle index mid = Math.floor((${left} + ${right}) / 2) = ${mid}. array[${mid}] (${midValue}) matches target ${target}!`,
         stats: { comparisons, accesses },
       });
@@ -183,7 +183,7 @@ export function binarySearch(array: number[], target: number): ArrayStep[] {
         target,
         isFound: true,
         foundIndex: mid,
-        codeLine: 9,
+        codeLine: 8,
         description: `Target ${target} found at index ${mid} after ${comparisons} comparison(s)!`,
         stats: { comparisons, accesses },
       });
@@ -199,7 +199,7 @@ export function binarySearch(array: number[], target: number): ArrayStep[] {
         pointers: { left, mid, right },
         target,
         isFound: false,
-        codeLine: 11,
+        codeLine: 10,
         description: `Examining mid = ${mid} (value: ${midValue}). Since ${midValue} < target (${target}), target must be in right half. Discarding indices [${left}..${mid}].`,
         stats: { comparisons, accesses },
       });
@@ -220,7 +220,7 @@ export function binarySearch(array: number[], target: number): ArrayStep[] {
           pointers: { left, right },
           target,
           isFound: false,
-          codeLine: 12,
+          codeLine: 11,
           description: `Updated search range to [${left}..${right}].`,
           stats: { comparisons, accesses },
         });
@@ -235,7 +235,7 @@ export function binarySearch(array: number[], target: number): ArrayStep[] {
         pointers: { left, mid, right },
         target,
         isFound: false,
-        codeLine: 13,
+        codeLine: 12,
         description: `Examining mid = ${mid} (value: ${midValue}). Since ${midValue} > target (${target}), target must be in left half. Discarding indices [${mid}..${right}].`,
         stats: { comparisons, accesses },
       });
@@ -256,7 +256,7 @@ export function binarySearch(array: number[], target: number): ArrayStep[] {
           pointers: { left, right },
           target,
           isFound: false,
-          codeLine: 14,
+          codeLine: 13,
           description: `Updated search range to [${left}..${right}].`,
           stats: { comparisons, accesses },
         });
@@ -277,7 +277,7 @@ export function binarySearch(array: number[], target: number): ArrayStep[] {
     pointers: { left, right },
     target,
     isFound: false,
-    codeLine: 17,
+    codeLine: 16,
     description: `Search space exhausted (left: ${left} > right: ${right}). Target ${target} is not in the array after ${comparisons} comparison(s).`,
     stats: { comparisons, accesses },
   });

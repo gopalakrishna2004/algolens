@@ -76,8 +76,8 @@ export const LandingHeroDemo: React.FC<LandingHeroDemoProps> = ({ onOpenLabWithA
 
         <div className="aperture-header-actions">
           <div className="aperture-step-counter">
-            <span className="counter-lbl">FRAME</span>
-            <span className="counter-val">{currentStepNum} / {totalStepsNum}</span>
+            <span className="counter-lbl">Step</span>
+            <span className="counter-val">{currentStepNum} of {totalStepsNum}</span>
           </div>
 
           <button
@@ -86,8 +86,8 @@ export const LandingHeroDemo: React.FC<LandingHeroDemoProps> = ({ onOpenLabWithA
             onClick={() => onOpenLabWithAlgo(selectedDemoId)}
             title={`Launch ${algoDef.metadata.name} in the full Laboratory`}
           >
-            <span>Inspect in Laboratory</span>
-            <span className="cta-arrow-symbol" aria-hidden="true">↗</span>
+            <span>Open in Laboratory</span>
+            <span className="cta-arrow-symbol" aria-hidden="true">→</span>
           </button>
         </div>
       </div>
@@ -108,7 +108,7 @@ export const LandingHeroDemo: React.FC<LandingHeroDemoProps> = ({ onOpenLabWithA
       {/* Docked Interaction Deck: Step Explanation & Transport */}
       <div className="aperture-dock-deck">
         <div className="dock-explanation-marginalia">
-          <span className="dock-action-tag">ACTION</span>
+          <span className="dock-action-tag">Current Invariant</span>
           <p className="dock-explanation-text">
             {currentStep?.description || 'Select an algorithm or trigger Play to observe live state transitions.'}
           </p>

@@ -26,6 +26,8 @@ interface WorkbenchDeskProps {
   showTarget: boolean;
   onUpdateData: (newArray: number[], newTarget: number) => void;
   onSortArray: () => void;
+  activeTab?: WorkbenchTab;
+  onTabChange?: (tab: WorkbenchTab) => void;
 }
 
 export type WorkbenchTab = 'code' | 'tutor' | 'dataset' | 'theory' | 'compare';
@@ -46,8 +48,18 @@ export const WorkbenchDesk: React.FC<WorkbenchDeskProps> = ({
   showTarget,
   onUpdateData,
   onSortArray,
+  activeTab: activeTabProp,
+  onTabChange,
 }) => {
-  const [activeTab, setActiveTab] = useState<WorkbenchTab>('code');
+  const [internalTab, setInternalTab] = useState<WorkbenchTab>('code');
+  const activeTab = activeTabProp ?? internalTab;
+  const handleTabSelect = (tab: WorkbenchTab) => {
+    if (onTabChange) {
+      onTabChange(tab);
+    } else {
+      setInternalTab(tab);
+    }
+  };
 
   const isSearching = metadata.category === 'searching';
 
@@ -62,7 +74,7 @@ export const WorkbenchDesk: React.FC<WorkbenchDeskProps> = ({
           aria-selected={activeTab === 'code'}
           aria-controls="panel-code"
           className={`desk-tab-btn ${activeTab === 'code' ? 'is-active' : ''}`}
-          onClick={() => setActiveTab('code')}
+          onClick={() => handleTabSelect('code')}
         >
           <span className="desk-tab-icon">💻</span>
           <span className="desk-tab-label">Source Code</span>
@@ -78,7 +90,7 @@ export const WorkbenchDesk: React.FC<WorkbenchDeskProps> = ({
           aria-selected={activeTab === 'tutor'}
           aria-controls="panel-tutor"
           className={`desk-tab-btn ${activeTab === 'tutor' ? 'is-active' : ''}`}
-          onClick={() => setActiveTab('tutor')}
+          onClick={() => handleTabSelect('tutor')}
         >
           <span className="desk-tab-icon">🧠</span>
           <span className="desk-tab-label">Lab Tutor</span>
@@ -93,7 +105,7 @@ export const WorkbenchDesk: React.FC<WorkbenchDeskProps> = ({
             aria-selected={activeTab === 'dataset'}
             aria-controls="panel-dataset"
             className={`desk-tab-btn ${activeTab === 'dataset' ? 'is-active' : ''}`}
-            onClick={() => setActiveTab('dataset')}
+            onClick={() => handleTabSelect('dataset')}
           >
             <span className="desk-tab-icon">📊</span>
             <span className="desk-tab-label">Custom Dataset</span>
@@ -107,7 +119,7 @@ export const WorkbenchDesk: React.FC<WorkbenchDeskProps> = ({
           aria-selected={activeTab === 'theory'}
           aria-controls="panel-theory"
           className={`desk-tab-btn ${activeTab === 'theory' ? 'is-active' : ''}`}
-          onClick={() => setActiveTab('theory')}
+          onClick={() => handleTabSelect('theory')}
         >
           <span className="desk-tab-icon">📖</span>
           <span className="desk-tab-label">Theory &amp; Prerequisites</span>
@@ -121,7 +133,7 @@ export const WorkbenchDesk: React.FC<WorkbenchDeskProps> = ({
             aria-selected={activeTab === 'compare'}
             aria-controls="panel-compare"
             className={`desk-tab-btn ${activeTab === 'compare' ? 'is-active' : ''}`}
-            onClick={() => setActiveTab('compare')}
+            onClick={() => handleTabSelect('compare')}
           >
             <span className="desk-tab-icon">⚖️</span>
             <span className="desk-tab-label">Linear vs Binary Benchmark</span>
@@ -147,6 +159,7 @@ export const WorkbenchDesk: React.FC<WorkbenchDeskProps> = ({
               currentStep={currentStep}
               currentStepIndex={currentStepIndex}
               totalSteps={totalSteps}
+              sourceCode={sourceCode}
               inputArray={inputArray}
               inputTarget={inputTarget}
               lastChallengeResult={lastChallengeResult}

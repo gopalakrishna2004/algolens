@@ -111,8 +111,8 @@ export const Sidebar: React.FC<SidebarProps> = ({
               <span className="brand-optic-dot" />
             </div>
             <div className="brand-text-stack">
-              <span className="brand-text-primary">ALGO</span>
-              <span className="brand-text-secondary">LENS 2.0</span>
+              <span className="brand-text-primary">AlgoLens</span>
+              <span className="brand-text-secondary">Curriculum</span>
             </div>
           </div>
 
@@ -147,7 +147,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
         <div className="sidebar-progress-card" role="region" aria-label="Learning Progression">
           <div className="progress-card-top">
             <div className="progress-metric-label">
-              <span>COMPLETION</span>
+              <span>Completion</span>
               <strong className="progress-metric-val">{completedCount}/{totalAlgorithms} ({progressPercent}%)</strong>
             </div>
             {onResetProgress && completedCount > 0 && (
@@ -180,7 +180,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
         {/* Recently Explored Algorithms */}
         {recentAlgos.length > 0 && !searchTerm && (
           <div className="recent-algos-section">
-            <span className="recent-section-label">RECENTLY EXPLORED</span>
+            <span className="recent-section-label">Recently Explored</span>
             <div className="recent-chips-tray">
               {recentAlgos.map((algo) => (
                 <button
@@ -252,7 +252,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
         {/* Curriculum Navigation Section */}
         <nav className="curriculum-nav" aria-label="Curriculum Chapters">
           <div className="curriculum-eyebrow">
-            <span>CHAPTERS</span>
+            <span>Chapters</span>
           </div>
 
           <div className="curriculum-chapters-list">
@@ -263,7 +263,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                 <div key={cat.id} className="chapter-group">
                   <div className="chapter-header">
                     <span className="chapter-index">{cat.chapterNumber}</span>
-                    <span className="chapter-title">{cat.name.toUpperCase()}</span>
+                    <span className="chapter-title">{cat.name}</span>
                     <span className="chapter-count">{cat.algorithms.length}</span>
                   </div>
 

@@ -1,6 +1,7 @@
 import React, { useState, useMemo, useEffect, useCallback } from 'react';
 import { ALGORITHM_REGISTRY, CATEGORIES, getAlgorithmById } from './algorithms/registry';
 import { isSorted } from './algorithms/searching/binarySearch';
+import { generateLinearSearchSource } from './algorithms/searching/linearSearch';
 import { useAlgorithmPlayer } from './hooks/useAlgorithmPlayer';
 import { VisualizerHost } from './visualizers/VisualizerHost';
 import { Controls } from './components/Controls/Controls';
@@ -11,8 +12,10 @@ import { InstrumentNavbar } from './components/Navigation/InstrumentNavbar';
 import { KeyboardShortcutsModal } from './components/Navigation/KeyboardShortcutsModal';
 import { LandingPage } from './components/Landing/LandingPage';
 import { ChallengeView } from './components/InteractiveLearning/ChallengeView';
-import { WorkbenchDesk } from './components/Workbench/WorkbenchDesk';
+import { WorkbenchDesk, type WorkbenchTab } from './components/Workbench/WorkbenchDesk';
 import { generateChallenge } from './learning/challengeEngine';
+import { MasteryModal } from './components/Mastery/MasteryModal';
+import { getMasteredCount } from './learning/mastery/masteryEngine';
 import {
   loadUserProgress,
   recordExploredAlgorithm,
@@ -54,7 +57,9 @@ export const App: React.FC = () => {
   const [isCurriculumDrawerOpen, setIsCurriculumDrawerOpen] = useState(false);
   const [isSidebarPinned, setIsSidebarPinned] = useState(false);
   const [isShortcutsModalOpen, setIsShortcutsModalOpen] = useState(false);
+  const [isMasteryModalOpen, setIsMasteryModalOpen] = useState(false);
   const [learningMode, setLearningMode] = useState<LearningMode>('explore');
+  const [workbenchTab, setWorkbenchTab] = useState<WorkbenchTab>('code');
   const [lastChallengeResult, setLastChallengeResult] = useState<{
     isCorrect: boolean;
     concept?: string;
@@ -275,6 +280,14 @@ export const App: React.FC = () => {
   const categoryIndex = CATEGORIES.findIndex((c) => c.id === metadata.category);
   const chapterNumber = String(categoryIndex >= 0 ? categoryIndex + 1 : 1).padStart(2, '0');
 
+  // Dynamically synchronize source code with active user input
+  const activeSourceCode = useMemo(() => {
+    if (selectedAlgoId === 'linear-search' && array) {
+      return generateLinearSearchSource(array, target);
+    }
+    return metadata.sourceCode;
+  }, [selectedAlgoId, array, target, metadata.sourceCode]);
+
   // Render Dedicated Landing Page when view === 'landing'
   if (currentView === 'landing') {
     return (
@@ -299,10 +312,11 @@ export const App: React.FC = () => {
         onToggleCurriculum={() => setIsCurriculumDrawerOpen((prev) => !prev)}
         learningMode={learningMode}
         onModeChange={setLearningMode}
-        completedCount={userProgress.completedAlgoIds.length}
+        completedCount={getMasteredCount(userProgress)}
         totalAlgorithms={Object.keys(ALGORITHM_REGISTRY).length}
         challengeStreak={userProgress.challengeStats.streak}
         onOpenShortcutsModal={() => setIsShortcutsModalOpen(true)}
+        onOpenMasteryModal={() => setIsMasteryModalOpen(true)}
       />
 
       <div className="main-stage-wrapper">
@@ -329,9 +343,9 @@ export const App: React.FC = () => {
             <header className="instrument-crown">
               <div className="crown-title-group">
                 <div className="chapter-eyebrow">
-                  <span className="eyebrow-chapter">CHAPTER {chapterNumber}</span>
-                  <span className="eyebrow-sep">/</span>
-                  <span className="eyebrow-category">{metadata.category.toUpperCase()}</span>
+                  <span className="eyebrow-chapter">Chapter {chapterNumber}</span>
+                  <span className="eyebrow-sep">·</span>
+                  <span className="eyebrow-category">{metadata.category}</span>
                   <span className="eyebrow-difficulty">{metadata.difficulty}</span>
                 </div>
 
@@ -342,22 +356,22 @@ export const App: React.FC = () => {
               {/* Compact Inline Complexity Specs Plaque */}
               <div className="complexity-plaque" role="group" aria-label="Complexity Specifications">
                 <div className="plaque-col">
-                  <span className="plaque-lbl">BEST</span>
+                  <span className="plaque-lbl">Best</span>
                   <span className="plaque-val">{metadata.timeComplexity.best}</span>
                 </div>
                 <div className="plaque-divider" />
                 <div className="plaque-col">
-                  <span className="plaque-lbl">AVERAGE</span>
+                  <span className="plaque-lbl">Average</span>
                   <span className="plaque-val">{metadata.timeComplexity.average}</span>
                 </div>
                 <div className="plaque-divider" />
                 <div className="plaque-col">
-                  <span className="plaque-lbl">WORST</span>
+                  <span className="plaque-lbl">Worst</span>
                   <span className="plaque-val">{metadata.timeComplexity.worst}</span>
                 </div>
                 <div className="plaque-divider" />
                 <div className="plaque-col">
-                  <span className="plaque-lbl">SPACE</span>
+                  <span className="plaque-lbl">Space</span>
                   <span className="plaque-val">{metadata.spaceComplexity}</span>
                 </div>
               </div>
@@ -402,6 +416,15 @@ export const App: React.FC = () => {
                   currentStepIndex={currentStepIndex}
                   totalSteps={totalSteps}
                   mode={learningMode}
+                  codeLine={currentStep?.codeLine}
+                  cSourceCode={activeSourceCode.c}
+                  onOpenCodeViewer={() => {
+                    setWorkbenchTab('code');
+                    const deskEl = document.getElementById('workbench-study-desk');
+                    if (deskEl) {
+                      deskEl.scrollIntoView({ behavior: 'smooth' });
+                    }
+                  }}
                 />
               )}
             </div>
@@ -452,13 +475,13 @@ export const App: React.FC = () => {
           </div>
 
           {/* Deep Secondary Study Desk */}
-          <section className="workbench-section" aria-label="Secondary Learning Workbench">
+          <section className="workbench-section" id="workbench-study-desk" aria-label="Secondary Learning Workbench">
             <WorkbenchDesk
               metadata={metadata}
               currentStep={currentStep}
               currentStepIndex={currentStepIndex}
               totalSteps={totalSteps}
-              sourceCode={metadata.sourceCode}
+              sourceCode={activeSourceCode}
               highlightLine={currentStep?.codeLine}
               inputArray={array}
               inputTarget={target}
@@ -469,6 +492,8 @@ export const App: React.FC = () => {
               showTarget={metadata.category === 'searching' || selectedAlgoId === 'two-pointers'}
               onUpdateData={handleUpdateData}
               onSortArray={handleSortArray}
+              activeTab={workbenchTab}
+              onTabChange={setWorkbenchTab}
             />
           </section>
         </main>
@@ -478,6 +503,16 @@ export const App: React.FC = () => {
       <KeyboardShortcutsModal
         isOpen={isShortcutsModalOpen}
         onClose={() => setIsShortcutsModalOpen(false)}
+      />
+
+      {/* Topic Mastery Assessment Modal */}
+      <MasteryModal
+        isOpen={isMasteryModalOpen}
+        onClose={() => setIsMasteryModalOpen(false)}
+        algoId={selectedAlgoId}
+        algoName={metadata.name}
+        userProgress={userProgress}
+        onUpdateProgress={setUserProgress}
       />
     </div>
   );

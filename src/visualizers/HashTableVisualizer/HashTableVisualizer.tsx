@@ -12,13 +12,13 @@ export const HashTableVisualizer: React.FC<HashTableVisualizerProps> = ({ step }
       {/* Action & Hash Info Header */}
       <div className="ht-telemetry-strip">
         <div className="ht-op-tag">
-          OP // {step.action.toUpperCase()}
+          {step.action.charAt(0).toUpperCase() + step.action.slice(1)}
         </div>
         {step.activeKey && (
           <div className="ht-hash-calc-pill">
-            KEY: <strong>&quot;{step.activeKey}&quot;</strong>
-            &nbsp;──▶ HASH: <span className="hash-val">{step.activeHash}</span>
-            &nbsp;──▶ BUCKET: <span className="hash-val">[{step.activeHash}]</span>
+            Key: <strong>&quot;{step.activeKey}&quot;</strong>
+            &nbsp;→ Hash: <span className="hash-val">{step.activeHash}</span>
+            &nbsp;→ Bucket: <span className="hash-val">[{step.activeHash}]</span>
           </div>
         )}
       </div>
@@ -35,14 +35,14 @@ export const HashTableVisualizer: React.FC<HashTableVisualizerProps> = ({ step }
             >
               {/* Bucket Index Header */}
               <div className="ht-bucket-index-tag">
-                [0x0{bucketIdx}]
+                Bucket {bucketIdx}
               </div>
 
               {/* Chained Linked List entries */}
               <div className="ht-chain-container">
                 {chain.length === 0 ? (
                   <span className="ht-chain-empty">
-                    (null slot)
+                    empty slot
                   </span>
                 ) : (
                   chain.map((entry, entryIdx) => (
@@ -52,13 +52,13 @@ export const HashTableVisualizer: React.FC<HashTableVisualizerProps> = ({ step }
                         <span className="ht-entry-sep">:</span>
                         <span className="ht-entry-val">{entry.value}</span>
                       </div>
-                      <span className="ht-chain-arrow">──▶</span>
+                      <span className="ht-chain-arrow">→</span>
                     </React.Fragment>
                   ))
                 )}
                 {chain.length > 0 && (
-                  <span style={{ color: '#ff786f', fontSize: '0.72rem', fontFamily: 'var(--font-mono, monospace)', fontWeight: 700 }}>
-                    NULL
+                  <span className="ht-chain-null">
+                    null
                   </span>
                 )}
               </div>

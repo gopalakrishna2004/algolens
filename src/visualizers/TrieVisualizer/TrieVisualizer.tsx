@@ -25,7 +25,7 @@ export const TrieVisualizer: React.FC<TrieVisualizerProps> = ({ step }) => {
         {/* End of Word Badge */}
         {node.isEndOfWord && (
           <span className="trie-end-word-tag">
-            [WORD]
+            Word End
           </span>
         )}
 
@@ -52,11 +52,11 @@ export const TrieVisualizer: React.FC<TrieVisualizerProps> = ({ step }) => {
       {/* Top Banner: Action & Target Word */}
       <div className="trie-telemetry-strip">
         <div className="trie-op-tag">
-          OP // {step.action.toUpperCase()}
+          {step.action.charAt(0).toUpperCase() + step.action.slice(1)}
         </div>
         {step.word && (
           <div className="trie-word-pill">
-            PREFIX/KEY: <strong>&quot;{step.word}&quot;</strong>
+            Key: <strong>&quot;{step.word}&quot;</strong>
           </div>
         )}
       </div>

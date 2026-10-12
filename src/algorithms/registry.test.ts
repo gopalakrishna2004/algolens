@@ -73,4 +73,61 @@ describe('Algorithm Registry', () => {
       'techniques',
     ]);
   });
+
+  it('should successfully execute all 32 algorithms with default inputs and produce non-empty steps', () => {
+    const keys = Object.keys(ALGORITHM_REGISTRY);
+    expect(keys.length).toBe(32);
+    keys.forEach((key) => {
+      const algo = ALGORITHM_REGISTRY[key];
+      const steps = algo.run(algo.defaultInput);
+      expect(Array.isArray(steps), `${key} should return an array`).toBe(true);
+      expect(steps.length, `${key} should produce at least one step`).toBeGreaterThan(0);
+      expect(steps[0].description, `${key} step 0 should have a description`).toBeDefined();
+    });
+  });
+
+  it('should reliably survive 100 random stress iterations across edge cases with zero crashes or invalid states', () => {
+    const searchingAndSorting = ['linear-search', 'binary-search', 'bubble-sort', 'selection-sort', 'insertion-sort', 'merge-sort', 'quick-sort', 'heap-sort'];
+
+    for (let iteration = 0; iteration < 100; iteration++) {
+      // Generate diverse test inputs
+      const size = Math.floor(Math.random() * 15); // 0 to 14 elements
+      const array = Array.from({ length: size }, () => Math.floor(Math.random() * 200) - 50);
+      const sortedArray = [...array].sort((a, b) => a - b);
+      const target = iteration % 2 === 0 && array.length > 0 ? array[Math.floor(Math.random() * array.length)] : 999;
+
+      // 1. Test linear-search
+      const linearSteps = ALGORITHM_REGISTRY['linear-search'].run({ array, target });
+      expect(linearSteps.length).toBeGreaterThan(0);
+      const linearFinal = linearSteps[linearSteps.length - 1];
+      if (array.includes(target)) {
+        expect(linearFinal.isFound).toBe(true);
+      } else {
+        expect(linearFinal.isFound).toBe(false);
+      }
+
+      // 2. Test binary-search on sorted input
+      const binarySteps = ALGORITHM_REGISTRY['binary-search'].run({ array: sortedArray, target });
+      expect(binarySteps.length).toBeGreaterThan(0);
+      const binaryFinal = binarySteps[binarySteps.length - 1];
+      if (sortedArray.includes(target)) {
+        expect(binaryFinal.isFound).toBe(true);
+      } else {
+        expect(binaryFinal.isFound).toBe(false);
+      }
+
+      // 3. Test sorting algorithms
+      const sortKey = searchingAndSorting[2 + (iteration % 6)];
+      const sortAlgo = ALGORITHM_REGISTRY[sortKey];
+      const sortSteps = sortAlgo.run({ array: [...array] });
+      expect(sortSteps.length).toBeGreaterThan(0);
+      const sortFinal = sortSteps[sortSteps.length - 1];
+      if (sortFinal && sortFinal.array) {
+        const result = sortFinal.array;
+        for (let i = 1; i < result.length; i++) {
+          expect(result[i]).toBeGreaterThanOrEqual(result[i - 1]);
+        }
+      }
+    }
+  });
 });

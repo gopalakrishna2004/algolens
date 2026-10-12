@@ -126,7 +126,7 @@ export const Controls: React.FC<ControlsProps> = ({
 
       {/* Speed Controls Segment */}
       <div className="speed-deck">
-        <span className="speed-label">SPEED</span>
+        <span className="speed-label">Speed</span>
         <div className="speed-presets">
           {[
             { label: '0.5x', ms: 1000 },
